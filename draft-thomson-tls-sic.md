@@ -2,7 +2,6 @@
 title: "Suppressing Intermediate Certificates in TLS"
 abbrev: Suppress Intermediates
 docname: draft-thomson-tls-sic-latest
-date: {DATE}
 category: std
 ipr: trust200902
 area: Transport
@@ -56,10 +55,7 @@ of the handshake.
 
 # Terms and Definitions
 
-The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this
-document are to be interpreted as described in BCP 14 {{!RFC2119}} {{!RFC8174}}
-when, and only when, they appear in all capitals, as shown here.
+{::boilerplate bcp14-tagged}
 
 
 # Got Intermediates Flag
