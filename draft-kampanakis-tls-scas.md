@@ -1,7 +1,7 @@
 ---
-title: "Suppressing Intermediate Certificates in TLS"
+title: "Suppressing CA Certificates in TLS"
 abbrev: Suppress Intermediates
-docname: draft-thomson-tls-sic-latest
+docname: draft-kampanakis-tls-scas 
 category: std
 ipr: trust200902
 area: Transport
@@ -16,6 +16,18 @@ author:
     name: Martin Thomson
     org: Mozilla
     email: mt@lowentropy.net
+
+  -
+    ins: P. Kampanakis
+    name: Panos Kampanakis
+    org: AWS
+    email: kpanos@amazon.com
+
+  -
+    ins: C. Bytheway 
+    name: Cameron Bytheway
+    org: AWS
+    email: bythewc@amazon.com
 
 normative:
 
