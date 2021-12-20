@@ -112,7 +112,7 @@ any other handshake message MUST generate a fatal illegal_parameter alert.
 
 [ EDNOTE: Discuss caching  beyond the scope of this document. ]
 
-[ EDNOTE: Add Note about using the old draft to include the chain fingerprint in order for the peer to confirm the peer has the right cert chain, in order to avoid inadvertent issues ] 
+[ EDNOTE: Add Note about optionally using the old draft to include the chain fingerprint in order for the peer to confirm the peer has the right cert chain, in order to avoid inadvertent issues ] 
 
 # Security Considerations
 
@@ -125,7 +125,7 @@ Mitigations
 
 # IANA Considerations
 
-This document registers the 0xTBD flag in the registry created by
+This document registers the 0xTBD1, 0xTBD2 flags in the registry created by
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}.
 
 
