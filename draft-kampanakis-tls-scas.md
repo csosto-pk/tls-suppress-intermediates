@@ -28,6 +28,12 @@ author:
     name: Cameron Bytheway
     org: AWS
     email: bythewc@amazon.com
+    
+  -
+    ins: B.E. Westerbaan
+    name: Bas Westerbaan
+    org: Cloudflare
+    email: bas@cloudflare.com
 
 normative:
 
