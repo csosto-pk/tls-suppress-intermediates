@@ -146,8 +146,6 @@ certificate authorities disclose all intermediate certificates that they
 create.  Though the set of intermediate certificates is large, the size is
 bounded, so it is possible to provide a complete set of certificates.
 
-EDNOTE: More motivation here from EAP drafts, QUIC, and TLS papers about PQ
-
 {{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}} talks about the cert size 
 problem in constrained environments.
 
@@ -162,6 +160,8 @@ Intermediate CA (ICA) certificates.
 {{CONEXT-PQTLS13SSH}} {{NDSS-PQTLS13}} show that cert chains exceeding TCP initcwnd slow down the handshake (round-trips)
 
 {{PQTLS}} shows that big certificate chains (even smaller than the TCP initcwnd) slow down the handshake in lossy conditions. 
+
+{{TLS-SUPPRESS}} discusses issue about QUIC and TLS and PQ certificates.
 
 Cloudflare Blog {{CL-BLOG}} shows that >9-10KB cert chains (even with 30MSS initcwnd) leads to double digit slowdown
 
