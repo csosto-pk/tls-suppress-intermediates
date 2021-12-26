@@ -209,7 +209,7 @@ its ClientHello message.
 A server that receives a value of 1 in the 0xTBD1 flag of a ClientHello
 message SHOULD omit all certificates other than the end-entity certificate 
 from its Certificate message that it sends in response. As per 
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the server will also acknowledge 
+{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the server SHOULD also acknowledge 
 support by sending the tls_flags extension in the Certificate message 
 with the 0xTBD1 flag set to 1. Otherwise if it does not support CA 
 certificate suppression, the server SHOULD ignore the 0xTBD1 flag. 
@@ -224,8 +224,8 @@ with the 0xTBD2 flag set to 1 in its CertificateRequest message.
 A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest 
 message SHOULD omit all certificates other than the end-entity certificate 
 from the Certificate message that it sends in response. As per 
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the client will also acknowledge 
-support by sending the tls_flags extension in the Certificate message 
+{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the client SHOULD also acknowledge 
+support by sending the tls_flags extension in its Certificate message 
 with the 0xTBD2 flag set to 1. Otherwise if it does not support CA 
 certificate suppression, the client SHOULD ignore the 0xTBD1 flag. 
 
