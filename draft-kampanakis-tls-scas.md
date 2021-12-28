@@ -128,6 +128,15 @@ informative:
     date: November 13, 2020
     target: https://blog.mozilla.org/security/2020/11/13/preloading-intermediate-ca-certificates-into-firefox/
 
+  NIST_PQ:
+    author:
+      -
+        ins: NIST
+        name: National Institute of Standards and Technology
+    title: "Post-Quantum Cryptography"
+    date: 2021
+    target: https://csrc.nist.gov/projects/post-quantum-cryptography
+    
 
 --- abstract
 
@@ -141,46 +150,79 @@ the TLS handshake.
 
 # Introduction
 
-In some uses of public key infrastructure (PKI) intermediate Certificate Authority (CA) certificates are
-used to sign end-entity certificates.  In the web PKI, clients require that
-certificate authorities disclose all intermediate certificates that they
-create.  Though the set of intermediate certificates is large, the size is
-bounded, so it is possible to provide a complete set of certificates.
+The most data heavy part of a TLS handshake is authentication. It usually
+consists of a signature, an end-entity certificate and Certificate Authority
+(CA) certificates used to authenticate the end-entity to a trusted root CA.
+These chains can sometime add to a few KB of data which could be problematic
+for some usecases. {{?EAPTLSCERT=I-D.ietf-emu-eaptlscert}} and
+{{?EAP-TLS13=I-D.ietf-emu-eap-tls13}} discuss the issues big certificate
+chains in EAP authentication. Additionally, it is known that IEEE 802.15.4
+{{IEEE802154}} mesh networks and Wi-SUN {{WISUN}} Field Area Networks
+often notice significant delays due to EAP-TLS authentication in
+constrained bandwidth mediums.
 
-{{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}} talks about the cert size
-problem in constrained environments.
+To alleviate the data exchanged in TLS
+{{?RFC8879=rfc8879}} shirnks certificates by compressing them.
+{{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}} uses different
+certificate encodings for constrained environments. On the other hand,
+{{?CTLS=I-D.ietf-tls-ctls}} proposes the use of certificate dictionaries
+to omit sending CA certificates in a Compact TLS handshake.
 
-{{?EAPTLSCERT=I-D.ietf-emu-eaptlscert}} and {{?EAP-TLS13=I-D.ietf-emu-eap-tls13}}
-talk about the problem of big TLS cert chains for EAP authentication.
+In a post-quantum context
+{{?I-D.hoffman-c2pq}}{{NIST_PQ}}{{?I-D.ietf-tls-hybrid-design}}, the TLS
+authentication data issue is exacerbated. {{CONEXT-PQTLS13SSH}}{{NDSS-PQTLS13}}
+show that post-quantum certificate chains exceeding the initial TCP
+congestion window (10MSS {{?RFC6928=rfc6928}}) will slow down the handshake due
+to the round-trips they introduce. {{PQTLS}} shows that big certificate
+chains (even smaller than the initial TCP congestion window) will
+slow down the handshake in lossy environments. {{TLS-SUPPRESS}}
+quantifies the post-quantum authentication data in QUIC and TLS
+and shows that even the leanest post-quantum signature algorithms
+will impact QUIC and TLS. {{CL-BLOG}} also shows that 9-10 kilobyte
+certificate chains (even with 30MSS initial TCP congestion window)
+will lead to double digit TLS handshake slowdowns. What's more, it
+shows that some clients or middleboxes cannot handle post-quantum
+handshake sizes.
 
-IEEE 802.15.4 {{IEEE802154}} mesh networks and Wi-SUN {{WISUN}} Field Area Networks  often notice significant delays due to EAP-TLS in constrained bandwidth mediums.
+Mechanisms like
+{{?RFC8879=rfc8879}}{{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}}
+would not alleviate the issue with post-quantum certificates
+as the bulk of the certificate size is in the post-quantum
+public key or signature which inevitably need to be in the
+certificate as-is.
 
-{{?CTLS=I-D.ietf-tls-ctls}} proposes cert dictionaries to omit
-Intermediate CA (ICA) certificates.
+Thus, this document introduces a backwards-compatible mechanism
+to shrink the certificate data exchanged in TLS. In some uses
+of public key infrastructure (PKI), intermediate CA certificates
+sign end-entity certificates.  In the web PKI, clients require
+that certificate authorities disclose all intermediate certificates
+that they create. Although the set of intermediate certificates
+is large, the size is bounded. Additionally, in some usecases the
+set of communicating peers is limited.
 
-{{CONEXT-PQTLS13SSH}} {{NDSS-PQTLS13}} show that cert chains exceeding TCP initcwnd slow down the handshake (round-trips)
+For a client or server that has the necessary intermediates,
+sending the peer send CA certificates in the TLS handshake
+increases the size of the handshake unnecessarily. This
+document defines signal that a client or server can send to
+inform its peer that it already has the intermediate CA
+certificates. A peer that receives this signal can
+limit the certificate chain it sends to just the
+end-entity certificate, saving on handshake size.
 
-{{PQTLS}} shows that big certificate chains (even smaller than the TCP initcwnd) slow down the handshake in lossy conditions.
-
-{{TLS-SUPPRESS}} discusses issue about QUIC and TLS and PQ certificates.
-
-Cloudflare Blog {{CL-BLOG}} shows that >9-10KB cert chains (even with 30MSS initcwnd) leads to double digit slowdowns. It also shows that some clients or middleboxes cannot handle the post-quantum handshake sizes.
-
-{{?RFC7924}}. No widespread adoption 5 years after standardization.
-Could allow TLS session correlation. Short-lived server certs will lead to frequent cache maintenance. Too many destinations will lead to frequent cache maintenance.
-
-For a client that has all intermediates, having the server send intermediates
-in the TLS handshake increases the size of the handshake unnecessarily.  This
-document creates a signal that a client can send that informs the server that
-it has a complete set of intermediates.  A server that receives this signal can
-limit the certificate chain it sends to just the end-entity certificate, saving
-on handshake size.
-
-This mechanism is intended to be complementary with certificate compression
-{{?RFC8879=rfc8879}} in that it reduces the size of the handshake especially
+This mechanism is intended to be complementary with
+certificate compression {{?RFC8879=rfc8879}} in that it
+further reduces the size of the handshake especially
 for post-quantum certificates.
 
-
+It is worth noting that {{?RFC7924}} attempted to address the
+issue by omitting all certificates in the handshake if the client
+or server had cached the peer certificate. This standard has not
+seen wide adoption and could allow for TLS session correlation.
+Additionally, the short lifetime certificates used today and the
+large size of peers in some usecases make the peer certificate
+cache update and maintenance mechanism challenging. The
+mechanism proposed in this document is not susceptible to
+these challenges.
 
 # Terms and Definitions
 
@@ -195,6 +237,11 @@ and only when, they appear in all capitals, as shown here.
 
 The goals if when the peer has the CAs to build the certificate chain
 it can signal to the peer to not send them and alleviate the data.
+Both TLS 1.2 {{?RFC5246=rfc5246}} and 1.3
+{{?RFC8446=rfc8446}} allow for the root CA certificate
+to be omitted from the handshake under the assumption
+that the remote peer already possesses it in order to
+validate its peers.
 
 It is beyond the scope of this document to define caching. Cases where
 all CAs can be cached like {{ICA-PRELOAD}}. Other usecase like will need caching and update  mechanism for cache hit and misses. Some are discussed in {{TLS-SUPPRESS}}.
@@ -207,7 +254,6 @@ certificates to authenticate the server sends the tls_flags extension
 its ClientHello message.
 
 A server that receives a value of 1 in the 0xTBD1 flag of a ClientHello
-<<<<<<< HEAD
 message SHOULD omit all certificates other than the end-entity certificate
 from its Certificate message that it sends in response. As per
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the server SHOULD also acknowledge
@@ -232,7 +278,6 @@ certificate suppression, the client SHOULD ignore the 0xTBD1 flag.
 
 The 0xTBD1 and 0xTBD2 flags can only be sent in a ClientHello, Certificate
 or CertificateRequest message. Endpoints that receive a value of 1 in
-=======
 message SHOULD omit all certificates other than the end-entity certificate 
 from its Certificate message that it sends in response. As per 
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the server will also acknowledge 
