@@ -131,16 +131,17 @@ informative:
 
 --- abstract
 
-A TLS client that has access to the complete set of published intermediate
-certificates can inform servers of this fact so that the server can avoid
-sending intermediates, reducing the size of the TLS handshake.
+A TLS client or server that has access to the complete set of published
+intermediate certificates can inform its peer to avoid sending
+certificate authority certificates, thus reducing the size of
+the TLS handshake.
 
 
 --- middle
 
 # Introduction
 
-In some uses of public key infrastructure (PKI) intermediate certificates are
+In some uses of public key infrastructure (PKI) intermediate Certificate Authority (CA) certificates are
 used to sign end-entity certificates.  In the web PKI, clients require that
 certificate authorities disclose all intermediate certificates that they
 create.  Though the set of intermediate certificates is large, the size is
