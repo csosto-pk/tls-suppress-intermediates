@@ -252,7 +252,7 @@ from the Certificate message that it sends in response. As per
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the client will also acknowledge 
 support by sending the tls_flags extension in the Certificate message 
 with the 0xTBD2 flag set to 1. Otherwise if it does not support CA 
-certificate suppression, the client SHOULD ignore the 0xTBD1 flag. 
+certificate suppression, the client SHOULD ignore the 0xTBD2 flag. 
 
 The 0xTBD1 and 0xTBD2 flags can only be sent in a ClientHello, Certificate 
 or CertificateRequest message. Endpoints that receive a value of 1 in
@@ -270,8 +270,12 @@ source. This might allow clients to be more
 effectively fingerprinted by peers and any elements on the network path.
 Mitigations of {{?ESNI=I-D.ietf-tls-esni}}.
 
-Correlation of data transferred in each direction could allow for destination could allows for correlation. Flipping a coin to request suppression
-or not.
+Even if encrypt the 0xTBD1 and 0xTBD2 flags in the handshake, a passive observer 
+could fingerprint the peers by analyzing the TLS handshake data flowing 
+each direction. To alleviate the fingerprinting concern the client or server 
+could randomly chose to not request suppression although it has cached CAs for the peer. 
+The probability of chosing to request suppression is a trade-off decision between 
+the risk of fingerprinting and TLS performance.
 
 
 # IANA Considerations
