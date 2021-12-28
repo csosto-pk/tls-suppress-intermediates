@@ -243,8 +243,11 @@ to be omitted from the handshake under the assumption
 that the remote peer already possesses it in order to
 validate its peers.
 
+EDNOTE: Discuss caching  beyond the scope of this document.
 It is beyond the scope of this document to define caching. Cases where
 all CAs can be cached like {{ICA-PRELOAD}}. Other usecase like will need caching and update  mechanism for cache hit and misses. Some are discussed in {{TLS-SUPPRESS}}.
+
+EDNOTE: Add Note about optionally using the old draft to include the chain fingerprint in order for the peer to confirm the peer has the right cert chain, in order to avoid inadvertent issues
 
 ## Client
 
@@ -261,36 +264,17 @@ support by sending the tls_flags extension in the Certificate message
 with the 0xTBD1 flag set to 1. Otherwise if it does not support CA
 certificate suppression, the server SHOULD ignore the 0xTBD1 flag.
 
+The 0xTBD1 flag can only be sent in a ClientHello message and the
+Certificate response message from the server. Endpoints that receive
+a 0xTBD1 flag with avalue of 1 in any other handshake message MUST
+generate a fatal illegal_parameter alert.
+
 ## Server (mutual TLS authentication)
 
 In a mutual TLS authentication scenario, a server that believes that it
 has a current, complete set of intermediate certificates to authenticate
 the server sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}
 with the 0xTBD2 flag set to 1 in its CertificateRequest message.
-
-A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest
-message SHOULD omit all certificates other than the end-entity certificate
-from the Certificate message that it sends in response. As per
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the client SHOULD also acknowledge
-support by sending the tls_flags extension in its Certificate message
-with the 0xTBD2 flag set to 1. Otherwise if it does not support CA
-certificate suppression, the client SHOULD ignore the 0xTBD1 flag.
-
-The 0xTBD1 and 0xTBD2 flags can only be sent in a ClientHello, Certificate
-or CertificateRequest message. Endpoints that receive a value of 1 in
-message SHOULD omit all certificates other than the end-entity certificate 
-from its Certificate message that it sends in response. As per 
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the server will also acknowledge 
-support by sending the tls_flags extension in the Certificate message 
-with the 0xTBD1 flag set to 1. Otherwise if it does not support CA 
-certificate suppression, the server SHOULD ignore the 0xTBD1 flag. 
-
-## Server (mutual TLS authentication)
-
-In a mutual TLS authentication scenario, a server that believes that it 
-has a current, complete set of intermediate certificates to authenticate 
-the server sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}} 
-with the 0xTBD2 flag set to 1 in its CertificateRequest message. 
 
 A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest 
 message SHOULD omit all certificates other than the end-entity certificate 
@@ -300,13 +284,11 @@ support by sending the tls_flags extension in the Certificate message
 with the 0xTBD2 flag set to 1. Otherwise if it does not support CA 
 certificate suppression, the client SHOULD ignore the 0xTBD2 flag. 
 
-The 0xTBD1 and 0xTBD2 flags can only be sent in a ClientHello, Certificate 
-or CertificateRequest message. Endpoints that receive a value of 1 in
-any other handshake message MUST generate a fatal illegal_parameter alert.
+The 0xTBD2 flag can only be sent in a CertificateRequest message and the 
+Certificate response message from the client. Endpoints that receive
+a 0xTBD2 flag with avalue of 1 in any other handshake message MUST
+generate a fatal illegal_parameter alert.
 
-EDNOTE: Discuss caching  beyond the scope of this document.
-
-EDNOTE: Add Note about optionally using the old draft to include the chain fingerprint in order for the peer to confirm the peer has the right cert chain, in order to avoid inadvertent issues
 
 # Security Considerations
 
