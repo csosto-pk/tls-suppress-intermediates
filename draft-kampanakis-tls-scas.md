@@ -163,7 +163,7 @@ Intermediate CA (ICA) certificates.
 
 {{TLS-SUPPRESS}} discusses issue about QUIC and TLS and PQ certificates.
 
-Cloudflare Blog {{CL-BLOG}} shows that >9-10KB cert chains (even with 30MSS initcwnd) leads to double digit slowdown
+Cloudflare Blog {{CL-BLOG}} shows that >9-10KB cert chains (even with 30MSS initcwnd) leads to double digit slowdowns. It also shows that some clients or middleboxes cannot handle the post-quantum handshake sizes.
 
 {{?RFC7924}}. No widespread adoption 5 years after standardization.
 Could allow TLS session correlation. Short-lived server certs will lead to frequent cache maintenance. Too many destinations will lead to frequent cache maintenance.
@@ -195,9 +195,8 @@ and only when, they appear in all capitals, as shown here.
 The goals if when the peer has the CAs to build the certificate chain
 it can signal to the peer to not send them and alleviate the data.
 
-It is beyong the scope of this document to define caching. Cases where
-alls CAs can be cached {{ICA-PRELOAD}}. Other caches we will need caching mechanism and cache
-hit and misses. Some are discussed in {{TLS-SUPPRESS}}.
+It is beyond the scope of this document to define caching. Cases where
+all CAs can be cached like {{ICA-PRELOAD}}. Other usecase like will need caching and update  mechanism for cache hit and misses. Some are discussed in {{TLS-SUPPRESS}}.
 
 ## Client
 
