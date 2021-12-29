@@ -292,18 +292,30 @@ generate a fatal illegal_parameter alert.
 
 # Security Considerations
 
-This creates an unencrypted signal that might be used to identify which clients
-believe that they have all intermediates. It does not reveal information about the destination or
-source. This might allow clients to be more
-effectively fingerprinted by peers and any elements on the network path.
-Mitigations of {{?ESNI=I-D.ietf-tls-esni}}.
+This document creates an unencrypted signal in the ClientHello that
+might be used to identify which clients believe that they have
+intermediates to build the certificate chain for their peer.
+Although it does not reveal any additional information about the
+peers, it might allow clients to be more effectively fingerprinted
+by peers or any passive observers in the network path. A
+mitigation against this concern is to encrypt the ClientHello in
+TLS 1.3 {{?ESNI=I-D.ietf-tls-esni}} which would hide the CA certificate
+suppression signal.
 
-Even if encrypt the 0xTBD1 and 0xTBD2 flags in the handshake, a passive observer 
-could fingerprint the peers by analyzing the TLS handshake data flowing 
-each direction. To alleviate the fingerprinting concern the client or server 
-could randomly chose to not request suppression although it has cached CAs for the peer. 
-The probability of chosing to request suppression is a trade-off decision between 
-the risk of fingerprinting and TLS performance.
+This concern exists in TLS 1.2 for both the client and server as
+the Certificate and CertificateRequest message are uncencrypted.
+Using TLS 1.3 {{?RFC8446=rfc8446}} would eliminate the concern.
+
+Even when the 0xTBD1 and 0xTBD2 flags are encrypted in the handshake,
+a passive observer could fingerprint the peers by analyzing the TLS
+handshake data sizes flowing each direction. To alleviate this
+concern the client or server could randomly chose to not request
+suppression although it has the CA certificates to validate the peer.
+That would prevent a passive attacker concluding if the CA certificate
+suppression signal is supported by the client or server. The
+probability distribution for chosing to request suppression or not
+is a trade-off decision between the risk of fingerprinting and TLS
+performance.
 
 
 # IANA Considerations
