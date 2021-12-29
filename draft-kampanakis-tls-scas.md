@@ -235,19 +235,31 @@ and only when, they appear in all capitals, as shown here.
 
 # Suppress CA Certificates Flag
 
-The goals if when the peer has the CAs to build the certificate chain
-it can signal to the peer to not send them and alleviate the data.
-Both TLS 1.2 {{?RFC5246=rfc5246}} and 1.3
-{{?RFC8446=rfc8446}} allow for the root CA certificate
-to be omitted from the handshake under the assumption
-that the remote peer already possesses it in order to
-validate its peers.
+The goal is when a client or server has the intermediate CAs
+to build the certificate chain for the peer it is establishing
+a TLS connection with, to signal to the peer to not send
+theese certificates. TLS 1.2 {{?RFC5246=rfc5246}} and 1.3
+{{?RFC8446=rfc8446}} allow for the root CA certificate to
+be omitted from the handshake under the assumption that
+the remote peer already possesses it in order to validate
+its peers. Thus, a client or server in possession of
+the CA certificates would only need the peer end-entity
+certificate to validate its identity which would alleviate
+the data flowing in TLS.
 
-EDNOTE: Discuss caching  beyond the scope of this document.
-It is beyond the scope of this document to define caching. Cases where
-all CAs can be cached like {{ICA-PRELOAD}}. Other usecase like will need caching and update  mechanism for cache hit and misses. Some are discussed in {{TLS-SUPPRESS}}.
+It is beyond the scope of this document to define how CA certificates
+are identified and stored. In some usecases {{ICA-PRELOAD}} the peer
+may assume that all intermediates are available locally. In other
+usecases where not all CA certificates can be stored, there may be
+intermediate CA certificate caching and updating mechanisms.
+Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}.
 
-EDNOTE: Add Note about optionally using the old draft to include the chain fingerprint in order for the peer to confirm the peer has the right cert chain, in order to avoid inadvertent issues
+EDNOTE: One additional option could be to use the TLS extension defined
+in {{?RFC7924}} to include the chain fingerprint so the peer can confirm
+that he does not need to send the chain because the peer asking for
+suppression has the correct chain to validate the server.
+That could prevent inadvertent mistakes where the client thinks it has
+the intermediates to validate the server, but what it has is wrong.
 
 ## Client
 
