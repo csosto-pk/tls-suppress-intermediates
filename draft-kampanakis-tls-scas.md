@@ -1,5 +1,5 @@
 ---
-title: "Suppressing CA Certificates in TLS"
+title: "Suppressing CA Certificates in TLS 1.3"
 abbrev: Suppress CAs
 docname: draft-kampanakis-tls-scas-latest
 category: std
@@ -192,7 +192,7 @@ public key or signature which inevitably need to be in the
 certificate as-is.
 
 Thus, this document introduces a backwards-compatible mechanism
-to shrink the certificate data exchanged in TLS. In some uses
+to shrink the certificate data exchanged in TLS 1.3. In some uses
 of public key infrastructure (PKI), intermediate CA certificates
 sign end-entity certificates.  In the web PKI, clients require
 that certificate authorities disclose all intermediate certificates
@@ -238,9 +238,9 @@ and only when, they appear in all capitals, as shown here.
 The goal is when a client or server has the intermediate CAs
 to build the certificate chain for the peer it is establishing
 a TLS connection with, to signal to the peer to not send
-theese certificates. TLS 1.2 {{?RFC5246=rfc5246}} and 1.3
-{{?RFC8446=rfc8446}} allow for the root CA certificate to
-be omitted from the handshake under the assumption that
+theese certificates. TLS {{?RFC5246=rfc5246}}
+{{?RFC8446=rfc8446}} allow for the root CA certificate to be
+omitted from the handshake under the assumption that
 the remote peer already possesses it in order to validate
 its peers. Thus, a client or server in possession of
 the CA certificates would only need the peer end-entity
@@ -313,10 +313,6 @@ by peers or any passive observers in the network path. A
 mitigation against this concern is to encrypt the ClientHello in
 TLS 1.3 {{?ESNI=I-D.ietf-tls-esni}} which would hide the CA certificate
 suppression signal.
-
-This concern exists in TLS 1.2 for both the client and server as
-the Certificate and CertificateRequest message are uncencrypted.
-Using TLS 1.3 {{?RFC8446=rfc8446}} would eliminate the concern.
 
 Even when the 0xTBD1 and 0xTBD2 flags are encrypted in the handshake,
 a passive observer could fingerprint the peers by analyzing the TLS
