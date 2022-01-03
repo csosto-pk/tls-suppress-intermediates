@@ -53,7 +53,7 @@ informative:
   CL-BLOG:
     author:
       -
-        ins: B. Westerbaan
+        ins: B.E. Westerbaan
         name: Bas Westerbaan
     title: Sizing Up Post-Quantum Signatures
     date: 8 November 2021
@@ -101,7 +101,7 @@ informative:
         ins: D. Stebila
         name: Douglas Stebila
       -
-        ins: G. amvada
+        ins: G. Tamvada
         name: Goutam Tamvada
     title: "Benchmarking Post-Quantum Cryptography in TLS"
     date: 2019
@@ -136,7 +136,7 @@ informative:
     title: "Post-Quantum Cryptography"
     date: 2021
     target: https://csrc.nist.gov/projects/post-quantum-cryptography
-    
+
 
 --- abstract
 
@@ -153,7 +153,7 @@ the TLS handshake.
 The most data heavy part of a TLS handshake is authentication. It usually
 consists of a signature, an end-entity certificate and Certificate Authority
 (CA) certificates used to authenticate the end-entity to a trusted root CA.
-These chains can sometime add to a few KB of data which could be problematic
+These chains can sometime add to a few kB of data which could be problematic
 for some usecases. {{?EAPTLSCERT=I-D.ietf-emu-eaptlscert}} and
 {{?EAP-TLS13=I-D.ietf-emu-eap-tls13}} discuss the issues big certificate
 chains in EAP authentication. Additionally, it is known that IEEE 802.15.4
@@ -162,7 +162,7 @@ often notice significant delays due to EAP-TLS authentication in
 constrained bandwidth mediums.
 
 To alleviate the data exchanged in TLS
-{{?RFC8879=rfc8879}} shirnks certificates by compressing them.
+{{?RFC8879=rfc8879}} shrinks certificates by compressing them.
 {{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}} uses different
 certificate encodings for constrained environments. On the other hand,
 {{?CTLS=I-D.ietf-tls-ctls}} proposes the use of certificate dictionaries
@@ -173,7 +173,7 @@ In a post-quantum context
 authentication data issue is exacerbated. {{CONEXT-PQTLS13SSH}}{{NDSS-PQTLS13}}
 show that post-quantum certificate chains exceeding the initial TCP
 congestion window (10MSS {{?RFC6928=rfc6928}}) will slow down the handshake due
-to the round-trips they introduce. {{PQTLS}} shows that big certificate
+to the extra round-trips they introduce. {{PQTLS}} shows that big certificate
 chains (even smaller than the initial TCP congestion window) will
 slow down the handshake in lossy environments. {{TLS-SUPPRESS}}
 quantifies the post-quantum authentication data in QUIC and TLS
@@ -181,15 +181,14 @@ and shows that even the leanest post-quantum signature algorithms
 will impact QUIC and TLS. {{CL-BLOG}} also shows that 9-10 kilobyte
 certificate chains (even with 30MSS initial TCP congestion window)
 will lead to double digit TLS handshake slowdowns. What's more, it
-shows that some clients or middleboxes cannot handle post-quantum
-handshake sizes.
+shows that some clients or middleboxes cannot handle chains larger
+than 10kB.
 
 Mechanisms like
 {{?RFC8879=rfc8879}}{{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}}
 would not alleviate the issue with post-quantum certificates
 as the bulk of the certificate size is in the post-quantum
-public key or signature which inevitably need to be in the
-certificate as-is.
+public key or signature which is incompressible.
 
 Thus, this document introduces a backwards-compatible mechanism
 to shrink the certificate data exchanged in TLS 1.3. In some uses
@@ -201,9 +200,9 @@ is large, the size is bounded. Additionally, in some usecases the
 set of communicating peers is limited.
 
 For a client or server that has the necessary intermediates,
-sending the peer send CA certificates in the TLS handshake
-increases the size of the handshake unnecessarily. This
-document defines signal that a client or server can send to
+receiving them during the TLS handshake, increases the data
+transmission unnecessarily. This
+document defines a signal that a client or server can send to
 inform its peer that it already has the intermediate CA
 certificates. A peer that receives this signal can
 limit the certificate chain it sends to just the
@@ -220,7 +219,8 @@ or server had cached the peer certificate. This standard has not
 seen wide adoption and could allow for TLS session correlation.
 Additionally, the short lifetime certificates used today and the
 large size of peers in some usecases make the peer certificate
-cache update and maintenance mechanism challenging. The
+cache update and maintenance mechanism challenging --- not the
+least because of privacy concerns.  The
 mechanism proposed in this document is not susceptible to
 these challenges.
 
@@ -285,7 +285,7 @@ generate a fatal illegal_parameter alert.
 
 In a mutual TLS authentication scenario, a server that believes that it
 has a current, complete set of intermediate certificates to authenticate
-the server sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}
+the client, sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}
 with the 0xTBD2 flag set to 1 in its CertificateRequest message.
 
 A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest 
@@ -296,7 +296,7 @@ support by sending the tls_flags extension in the Certificate message
 with the 0xTBD2 flag set to 1. Otherwise if it does not support CA 
 certificate suppression, the client SHOULD ignore the 0xTBD2 flag. 
 
-The 0xTBD2 flag can only be sent in a CertificateRequest message and the 
+The 0xTBD2 flag can only be sent in a CertificateRequest message and the
 Certificate response message from the client. Endpoints that receive
 a 0xTBD2 flag with avalue of 1 in any other handshake message MUST
 generate a fatal illegal_parameter alert.
