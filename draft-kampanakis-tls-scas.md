@@ -316,14 +316,18 @@ suppression signal.
 
 Even when the 0xTBD1 and 0xTBD2 flags are encrypted in the handshake,
 a passive observer could fingerprint the peers by analyzing the TLS
-handshake data sizes flowing each direction. To alleviate this
+handshake data sizes flowing each direction. Widespread adoption of
+the TLS suppression mechanism described in this document will deem
+the use of the signal for fingerprinting impractical.
+<!-- [EDNOTE: Commenting this out as the probabilistic TLS suppression for the same source-destination would reveal trying to hide TLS suppression. Maybe we can rethink it later] 
+To alleviate this
 concern the client or server could randomly chose to not request
 suppression although it has the CA certificates to validate the peer.
 That would prevent a passive attacker concluding if the CA certificate
 suppression signal is supported by the client or server. The
 probability distribution for chosing to request suppression or not
 is a trade-off decision between the risk of fingerprinting and TLS
-performance.
+performance. --> 
 
 
 # IANA Considerations
