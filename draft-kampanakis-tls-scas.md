@@ -275,8 +275,8 @@ certificates to authenticate the server sends the tls_flags extension
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}} with the 0xTBD1 flag set to 1 in
 its ClientHello message.
 
-To prevent a failed TLS connection, a client could choose not to send the
-flag if its list of ICAs hasn't been updated in a while or has any other
+To prevent a failed TLS connection, a client MAY choose not to send the
+flag if its list of ICAs hasn't been updated in TBD3 time or has any other
 reason to believe it does not include the ICAs for its peer.
 
 A server that receives a value of 1 in the 0xTBD1 flag of a ClientHello
@@ -303,8 +303,8 @@ has a current, complete set of intermediate certificates to authenticate
 the client, sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}
 with the 0xTBD2 flag set to 1 in its CertificateRequest message. 
 
-To prevent a failed TLS connection, a server could choose not to send the
-flag if its list of ICAs hasn't been updated in a while or has any other
+To prevent a failed TLS connection, a server MAY choose not to send the
+flag if its list of ICAs hasn't been updated in TBD3 time or has any other
 reason to believe it does not include the ICAs for its peer.
 
 A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest 
