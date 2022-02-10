@@ -254,12 +254,14 @@ usecases where not all CA certificates can be stored, there may be
 intermediate CA certificate caching and updating mechanisms.
 Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}.
 
-EDNOTE: One additional option could be to use the TLS extension defined
-in {{?RFC7924}} to include the chain fingerprint so the peer can confirm
-that he does not need to send the chain because the peer asking for
-suppression has the correct chain to validate the server.
-That could prevent inadvertent mistakes where the client thinks it has
-the intermediates to validate the server, but what it has is wrong.
+EDNOTE: One additional option could be to use a TLS extension like
+the one defined in {{?RFC7924}} to include the chain fingerprint so
+the peer can confirm that he does not need to send the chain because
+the peer asking for suppression has the correct chain to validate the
+server. That could prevent inadvertent mistakes where the client thinks
+it has the intermediates to validate the server, but what it has is wrong.
+Alternatively we could HMAC the chain to make it indistinguisable.
+The shortcoming is that both of these methods could be used as a cookie.
 
 ## Client
 
@@ -268,9 +270,9 @@ certificates to authenticate the server sends the tls_flags extension
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}} with the 0xTBD1 flag set to 1 in
 its ClientHello message.
 
-To prevent a failed TLS connection, a client could choose not to send the 
-flag if its list of ICAs hasn't been updated in a while or has any other 
-reason to believe it does not include the ICAs for its peer. 
+To prevent a failed TLS connection, a client could choose not to send the
+flag if its list of ICAs hasn't been updated in a while or has any other
+reason to believe it does not include the ICAs for its peer.
 
 A server that receives a value of 1 in the 0xTBD1 flag of a ClientHello
 message SHOULD omit all certificates other than the end-entity certificate
@@ -280,8 +282,8 @@ support by sending the tls_flags extension in the Certificate message
 with the 0xTBD1 flag set to 1. Otherwise if it does not support CA
 certificate suppression, the server SHOULD ignore the 0xTBD1 flag.
 
-To prevent a failed TLS connection, a server could chose to not send its 
-intermediates regardless of the flag from the client, if it has a reason 
+To prevent a failed TLS connection, a server could chose to not send its
+intermediates regardless of the flag from the client, if it has a reason
 to believe the issuing CAs do not exist in the client ICA list.
 
 The 0xTBD1 flag can only be sent in a ClientHello message and the
@@ -296,9 +298,9 @@ has a current, complete set of intermediate certificates to authenticate
 the client, sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}
 with the 0xTBD2 flag set to 1 in its CertificateRequest message. 
 
-To prevent a failed TLS connection, a server could choose not to send the 
-flag if its list of ICAs hasn't been updated in a while or has any other 
-reason to believe it does not include the ICAs for its peer. 
+To prevent a failed TLS connection, a server could choose not to send the
+flag if its list of ICAs hasn't been updated in a while or has any other
+reason to believe it does not include the ICAs for its peer.
 
 A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest 
 message SHOULD omit all certificates other than the end-entity certificate 
@@ -308,8 +310,8 @@ support by sending the tls_flags extension in the Certificate message
 with the 0xTBD2 flag set to 1. Otherwise if it does not support CA 
 certificate suppression, the client SHOULD ignore the 0xTBD2 flag. 
 
-To prevent a failed TLS connection, a client could chose to not send its 
-intermediates regardless of the flag from the server, if it has a reason 
+To prevent a failed TLS connection, a client could chose to not send its
+intermediates regardless of the flag from the server, if it has a reason
 to believe the issuing CAs do not exist in the server ICA list.
 
 The 0xTBD2 flag can only be sent in a CertificateRequest message and the
