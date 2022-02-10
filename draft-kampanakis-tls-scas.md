@@ -291,6 +291,10 @@ To prevent a failed TLS connection, a server could chose to not send its
 intermediates regardless of the flag from the client, if it has a reason
 to believe the issuing CAs do not exist in the client ICA list.
 
+If the connection still fails because the clients cannot build the
+certificate chain to authenticate the server, the client MUST NOT
+send the flag in a subsequent connection to the server.
+
 The 0xTBD1 flag can only be sent in a ClientHello message and the
 Certificate response message from the server. Endpoints that receive
 a 0xTBD1 flag with avalue of 1 in any other handshake message MUST
@@ -318,6 +322,12 @@ certificate suppression, the client SHOULD ignore the 0xTBD2 flag.
 To prevent a failed TLS connection, a client could chose to not send its
 intermediates regardless of the flag from the server, if it has a reason
 to believe the issuing CAs do not exist in the server ICA list.
+
+If the connection still fails because the server cannot build the
+certificate chain to authenticate the client, the server MUST NOT
+send the flag in a subsequent connection from the client.
+EDNOTE: There is a challenge with this in that the server needs to keep
+track of failed client connections.
 
 The 0xTBD2 flag can only be sent in a CertificateRequest message and the
 Certificate response message from the client. Endpoints that receive
