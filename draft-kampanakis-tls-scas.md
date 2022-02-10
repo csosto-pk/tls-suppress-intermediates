@@ -254,7 +254,7 @@ usecases where not all CA certificates can be stored, there may be
 intermediate CA certificate caching and updating mechanisms.
 Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}.
 
-EDNOTE: One additional option could be to use a TLS extension like
+\[EDNOTE: One additional option could be to use a TLS extension like
 the one defined in {{?RFC7924}} to include the chain fingerprint so
 the peer can confirm that he does not need to send the chain because
 the peer asking for suppression has the correct chain to validate the
@@ -265,7 +265,7 @@ Alternatively we could HMAC the chain to make it indistinguisable.
 Another option is for the server to provide a ticket so client returning
 visits tell the server that the client has the ICAs and it does not
 need to send them. These options require further evaluation only if
-we think that they are worth the effort.
+we think that they are worth the effort.\]
 
 
 ## Client
@@ -291,7 +291,7 @@ To prevent a failed TLS connection, a server could chose to not send its
 intermediates regardless of the flag from the client, if it has a reason
 to believe the issuing CAs do not exist in the client ICA list.
 
-If the connection still fails because the clients cannot build the
+If the connection still fails because the client cannot build the
 certificate chain to authenticate the server, the client MUST NOT
 send the flag in a subsequent connection to the server.
 
@@ -326,8 +326,8 @@ to believe the issuing CAs do not exist in the server ICA list.
 If the connection still fails because the server cannot build the
 certificate chain to authenticate the client, the server MUST NOT
 send the flag in a subsequent connection from the client.
-EDNOTE: There is a challenge with this in that the server needs to keep
-track of failed client connections.
+\[EDNOTE: There is a challenge with this in that the server needs to keep
+track of failed client connections.\]
 
 The 0xTBD2 flag can only be sent in a CertificateRequest message and the
 Certificate response message from the client. Endpoints that receive
