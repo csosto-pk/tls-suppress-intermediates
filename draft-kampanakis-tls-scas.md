@@ -260,8 +260,13 @@ the peer can confirm that he does not need to send the chain because
 the peer asking for suppression has the correct chain to validate the
 server. That could prevent inadvertent mistakes where the client thinks
 it has the intermediates to validate the server, but what it has is wrong.
+The shortcoming is that could be used as a cookie.
 Alternatively we could HMAC the chain to make it indistinguisable.
-The shortcoming is that both of these methods could be used as a cookie.
+Another option is for the server to provide a ticket so client returning
+visits tell the server that the client has the ICAs and it does not
+need to send them. These options require further evaluation only if
+we think that they are worth the effort.
+
 
 ## Client
 
