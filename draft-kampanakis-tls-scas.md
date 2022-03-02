@@ -252,7 +252,7 @@ are identified and stored. In some usecases {{ICA-PRELOAD}} the peer
 may assume that all intermediates are available locally. In other
 usecases where not all CA certificates can be stored, there may be
 intermediate CA certificate caching and updating mechanisms.
-Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}.
+Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}. 
 
 \[EDNOTE: One additional option could be to use a TLS extension like
 the one defined in {{?RFC7924}} to include the chain fingerprint so
@@ -266,6 +266,11 @@ Another option is for the server to provide a ticket so client returning
 visits tell the server that the client has the ICAs and it does not
 need to send them. These options require further evaluation only if
 we think that they are worth the effort.\]
+
+The 0xTBD1 flag used below to signal ICA suppression can only be sent
+in a ClientHello or CertificateRequest message as defined below.
+Endpoints that receive a 0xTBD1 flag with a value of 1 in any other
+handshake message MUST generate a fatal illegal_parameter alert.
 
 
 ## Client
@@ -281,11 +286,9 @@ reason to believe it does not include the ICAs for its peer.
 
 A server that receives a value of 1 in the 0xTBD1 flag of a ClientHello
 message SHOULD omit all certificates other than the end-entity certificate
-from its Certificate message that it sends in response. As per
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the server shall also acknowledge
-support by sending the tls_flags extension in the Certificate message
-with the 0xTBD1 flag set to 1. Otherwise if it does not support CA
-certificate suppression, the server SHOULD ignore the 0xTBD1 flag.
+from its Certificate message that it sends in response. Otherwise if it
+does not support CA certificate suppression, the server SHOULD ignore the
+0xTBD1 flag.
 
 To prevent a failed TLS connection, a server could chose to not send its
 intermediates regardless of the flag from the client, if it has a reason
@@ -295,29 +298,22 @@ If the connection still fails because the client cannot build the
 certificate chain to authenticate the server, the client MUST NOT
 send the flag in a subsequent connection to the server.
 
-The 0xTBD1 flag can only be sent in a ClientHello message and the
-Certificate response message from the server. Endpoints that receive
-a 0xTBD1 flag with avalue of 1 in any other handshake message MUST
-generate a fatal illegal_parameter alert.
-
 ## Server (mutual TLS authentication)
 
 In a mutual TLS authentication scenario, a server that believes that it
 has a current, complete set of intermediate certificates to authenticate
 the client, sends the tls_flags extension {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}
-with the 0xTBD2 flag set to 1 in its CertificateRequest message. 
+with the 0xTBD1 flag set to 1 in its CertificateRequest message.
 
 To prevent a failed TLS connection, a server MAY choose not to send the
 flag if its list of ICAs hasn't been updated in TBD3 time or has any other
 reason to believe it does not include the ICAs for its peer.
 
-A client that receives a value of 1 in the 0xTBD2 flag in a CertificateRequest 
-message SHOULD omit all certificates other than the end-entity certificate 
-from the Certificate message that it sends in response. As per 
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}, the client shall also acknowledge 
-support by sending the tls_flags extension in the Certificate message 
-with the 0xTBD2 flag set to 1. Otherwise if it does not support CA 
-certificate suppression, the client SHOULD ignore the 0xTBD2 flag. 
+A client that receives a value of 1 in the 0xTBD1 flag in a CertificateRequest
+message SHOULD omit all certificates other than the end-entity certificate
+from the Certificate message that it sends in response. Otherwise if it
+does not support CA certificate suppression, the client SHOULD ignore the
+0xTBD flag.
 
 To prevent a failed TLS connection, a client could chose to not send its
 intermediates regardless of the flag from the server, if it has a reason
@@ -328,11 +324,6 @@ certificate chain to authenticate the client, the server MUST NOT
 send the flag in a subsequent connection from the client.
 \[EDNOTE: There is a challenge with this in that the server needs to keep
 track of failed client connections.\]
-
-The 0xTBD2 flag can only be sent in a CertificateRequest message and the
-Certificate response message from the client. Endpoints that receive
-a 0xTBD2 flag with avalue of 1 in any other handshake message MUST
-generate a fatal illegal_parameter alert.
 
 
 # Security Considerations
@@ -347,7 +338,7 @@ mitigation against this concern is to encrypt the ClientHello in
 TLS 1.3 {{?ESNI=I-D.ietf-tls-esni}} which would hide the CA certificate
 suppression signal.
 
-Even when the 0xTBD1 and 0xTBD2 flags are encrypted in the handshake,
+Even when the 0xTBD1 flag is encrypted in the handshake,
 a passive observer could fingerprint the peers by analyzing the TLS
 handshake data sizes flowing each direction. Widespread adoption of
 the TLS suppression mechanism described in this document will deem
@@ -365,7 +356,7 @@ performance. -->
 
 # IANA Considerations
 
-This document registers the 0xTBD1, 0xTBD2 flags in the registry created by
+This document registers the 0xTBD1 in the registry created by
 {{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}.
 
 
