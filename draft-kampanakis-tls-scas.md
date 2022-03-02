@@ -290,7 +290,7 @@ from its Certificate message that it sends in response. Otherwise if it
 does not support CA certificate suppression, the server SHOULD ignore the
 0xTBD1 flag.
 
-To prevent a failed TLS connection, a server could chose to not send its
+To prevent a failed TLS connection, a server could choose to send its
 intermediates regardless of the flag from the client, if it has a reason
 to believe the issuing CAs do not exist in the client ICA list.
 
@@ -315,7 +315,7 @@ from the Certificate message that it sends in response. Otherwise if it
 does not support CA certificate suppression, the client SHOULD ignore the
 0xTBD flag.
 
-To prevent a failed TLS connection, a client could chose to not send its
+To prevent a failed TLS connection, a client could choose to send its
 intermediates regardless of the flag from the server, if it has a reason
 to believe the issuing CAs do not exist in the server ICA list.
 
@@ -345,7 +345,7 @@ the TLS suppression mechanism described in this document will deem
 the use of the signal for fingerprinting impractical.
 <!-- [EDNOTE: Commenting this out as the probabilistic TLS suppression for the same source-destination would reveal trying to hide TLS suppression. Maybe we can rethink it later] 
 To alleviate this
-concern the client or server could randomly chose to not request
+concern the client or server could randomly choose to not request
 suppression although it has the CA certificates to validate the peer.
 That would prevent a passive attacker concluding if the CA certificate
 suppression signal is supported by the client or server. The
