@@ -252,7 +252,7 @@ are identified and stored. In some usecases {{ICA-PRELOAD}} the peer
 may assume that all intermediates are available locally. In other
 usecases where not all CA certificates can be stored, there may be
 intermediate CA certificate caching and updating mechanisms.
-Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}. 
+Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}.
 
 \[EDNOTE: One additional option could be to use a TLS extension like
 the one defined in {{?RFC7924}} to include the chain fingerprint so
