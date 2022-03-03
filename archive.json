@@ -1,0 +1,471 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2022-03-03T00:54:30.143218+00:00",
+  "repo": "csosto-pk/tls-suppress-intermediates",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    },
+    {
+      "name": "TODO",
+      "description": "",
+      "color": "FAD807"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOCpw2285A5CgM",
+      "title": "Resumption and renegotiation?",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/1",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "question"
+      ],
+      "body": "From [Hubert K.](https://mailarchive.ietf.org/arch/msg/tls/W2Rv6_KFnFUPoK00yrfdvy4Dw4Q/)\r\n\r\n>> in the situation when the server or client intend to use an \"unpublished\" \r\n(term not defined in RFC) the behaviour of them is unspecified\r\n> \r\n> what about resumption and renegotiation?",
+      "createdAt": "2021-12-26T04:01:40Z",
+      "updatedAt": "2022-02-18T18:40:01Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOCpw2285A5C-t",
+      "title": "Intermediate CA change or chain validation failure scenario",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/2",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "From [Watson L.](https://mailarchive.ietf.org/arch/msg/tls/KAAKiEki36gL8g40ZimNHk39OXY/) \r\n\r\n> Suppose the following sequence of events happen:\r\n> 1: A CA uses a new intermediate for reasons (no longer cross-signing, etc.)\r\n> 2: A site gets a certificate from the new intermediate.\r\n> 3: An older firefox version connects and thinks it knows all the certificates in the world.\r\n> \r\n> This would seem to break and it wasn't clear to me how this would be handled. ",
+      "createdAt": "2021-12-26T04:24:12Z",
+      "updatedAt": "2022-02-18T17:15:40Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From [Adam L.](https://mailarchive.ietf.org/arch/msg/tls/sJ4vlchFfKtKqYDADdxwAWoR2ug/ )\r\n\r\n> I think the client would have to fall back and retry the TLS connection without requesting that intermediates be omitted. In general, I think this is the only reliable answer as AIA-chasing doesn't always work. (Either the AIA server can be down, or the chain can be from a private CA that doesn't support AIA.)",
+          "createdAt": "2021-12-26T04:26:20Z",
+          "updatedAt": "2021-12-29T15:53:08Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "I added text to add an optional solution to this issue\r\n> EDNOTE: One additional option could be to use the TLS extension defined\r\nin [RFC7924] to include the chain fingerprint so the peer can confirm\r\nthat he does not need to send the chain because the peer asking for\r\nsuppression has the correct chain to validate the server.\r\nThat could prevent inadvertent mistakes where the client thinks it has\r\nthe intermediates to validate the server, but what it has is wrong.\r\n\r\nWe should discuss this and [Adam L's suggestion](https://mailarchive.ietf.org/arch/msg/tls/sJ4vlchFfKtKqYDADdxwAWoR2ug/) \r\n>I think the client would have to fall back and retry the TLS connection\r\nwithout requesting that intermediates be omitted.\r\n\r\nin the WG if the draft gets adopted ",
+          "createdAt": "2021-12-29T15:50:44Z",
+          "updatedAt": "2021-12-29T16:07:19Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "In https://mailarchive.ietf.org/arch/msg/tls/Zp4GfjXaCrtmVwfVEst-iD_-Njw/ Ryan S. was pointing out that if we are willing to assume that there is a mechanism for the ICA list to be delivered OOB then maybe we can simplify the failure scenario.",
+          "createdAt": "2022-02-18T17:10:36Z",
+          "updatedAt": "2022-02-18T17:10:36Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Related issues \r\n- https://github.com/csosto-pk/tls-suppress-intermediates/issues/6 talks about constrained intermediates and how they are not available and cause failures. What assumptions we could make and potential solution to have the server send the chain regardless if it knows it has a constrained intermediate. \r\n- https://github.com/csosto-pk/tls-suppress-intermediates/issues/4 talks about a potential solution for the server to keep state in a ticket so it knows the client has the ICA or not. Not sure at this time if it is worth the effort. ",
+          "createdAt": "2022-02-18T17:15:40Z",
+          "updatedAt": "2022-02-18T17:15:40Z"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOCpw2285Cxdm8",
+      "title": "Cache information in tickets to prevent incorrect ICA list failures",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/4",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "From @martinthomson \r\n> If we are talking about return visits to the server, the client doesn't even need to be involved.  The server can pack whatever state it wants into the ticket and even if the ticket is not used, it can use that information.  From a privacy perspective, this falls under existing mechanisms, so no new exposure.  And no new protocol mechanism is needed.\r\n\r\n",
+      "createdAt": "2022-02-01T05:51:40Z",
+      "updatedAt": "2022-02-18T17:08:21Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From @camshaft \r\n\r\n> So on a return visit, the client would still need to set the tls_flags bit but the server could determine given the presented ticket if it wants to send the full chain.\r\n> \r\n> Do you think this is worth calling out in the draft? As in, recommending if servers support the tls_flags bit, they should also issue tickets to prevent the \"false start\" problem. Or do we take it further and say it's the server SHOULD only suppress CA chains as long as it has a mechanism to detect if the client's cached cert is correct or not, which could include ticket information?\r\n> \r\n> Without a reliable detection mechanism, the failure scenario doesn't perform very well. For TCP/TLS 1.3 it would be 4 RTTs for the handshake (plus a TLS alert) and 2 RTTs for QUIC (plus a CONNECTION_CLOSE). The server also has to perform the ServerCertificateVerify step twice, once for the failed attempt, once for the successful one. But like you said, some experimentation may show it isn't a big deal in practice.\r\n",
+          "createdAt": "2022-02-01T05:52:25Z",
+          "updatedAt": "2022-02-01T05:52:25Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From @martinthomson \r\n\r\n> As I've said before (I think) a lot hinges on the semantics of the tls_flags bit.  I don't think that we can say that it means \"I have all the intermediates I am willing to accept\".  That's a little too absolute for the web PKI as it stands.  Right now, we (as a client) have knowledge of all the intermediates without technical constraints (like name constraints), which goes a long way, but an unqualified claim like that would amount to a lie for us.\r\n> \r\n> I don't have stats on how often we'd fail as a result; I'd have to check with others.  It might take a very long time to find out if we don't have metrics already.\r\n> \r\n> We /can/ retry, but as you say it's a big performance hit that we'd only want to pay if we hit exceptional circumstances.  My sense is that unconstrained intermediates isn't exceptional.\r\n> \r\n> I am inclined to push for a semantic of \"I have all the *unconstrained* intermediates that I'm willing to accept\".  Or maybe \"I have all the intermediates from that I'm willing to accept, unless it's the WebPKI and then I only have unconstrained intermediates\"' if someone wants to assert that enumerating all the constrained intermediates is a reasonable ask in other settings.  A context-dependent interpretation is also possible, though that seems like a recipe for accidental interoperability failure.  If we specify an automatic retry, that sort of thing becomes a latent performance bug, which I'd prefer to avoid.\r\n",
+          "createdAt": "2022-02-01T05:53:05Z",
+          "updatedAt": "2022-02-01T05:53:05Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From @bwesterb \r\n\r\n>If I'm not mistaken, by default, Chrome and Safari currently require SCTs on a leaf even if the intermediate is name-constrained.\r\n> \r\n> I'm gathering all non-expired non-MMD intermediates logged in CT now. I haven't downloaded them all yet[1], but so far there are 1537.\r\n",
+          "createdAt": "2022-02-02T19:11:30Z",
+          "updatedAt": "2022-02-02T19:11:30Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOCpw2285D7EW7",
+      "title": "Nit from Ilari ",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/5",
+      "state": "CLOSED",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "bug",
+        "TODO"
+      ],
+      "body": "Section 3.2: \"To prevent a failed TLS connection, a client could chose to not send its intermediates regardless of the flag from the server, if it has a reason to believe the issuing CAs do not exist in the server ICA list.\"\r\n\r\n... Shouldn't the client send its intermediates if it thinks the server does not have them. \r\n",
+      "createdAt": "2022-02-16T05:26:39Z",
+      "updatedAt": "2022-03-02T04:12:54Z",
+      "closedAt": "2022-03-02T04:12:54Z",
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in https://github.com/csosto-pk/tls-suppress-intermediates/commit/c4295a28b4402800fec054a7af68a9425d535be7",
+          "createdAt": "2022-03-02T04:12:54Z",
+          "updatedAt": "2022-03-02T04:12:54Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOCpw2285D7Gfe",
+      "title": "Constrained intermediates not published publicly",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/6",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "> In WebPKI, there are some cornercases (constrained ICAs) where the client might be missing a certificate or certificates in the chain.\r\n> Currently the WebPKI root program rules allow not disclosing \"technically constrained\" certificates (but there are plans to change this).\r\n",
+      "createdAt": "2022-02-16T05:39:10Z",
+      "updatedAt": "2022-02-18T17:19:35Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Martin \r\n\r\n> As I've said before (I think) a lot hinges on the semantics of the tls_flags bit.  I don't think that we can say that it means \"I have all the intermediates I am willing to accept\".  That's a little too absolute for the web PKI as it stands.  Right now, we (as a client) have knowledge of all the intermediates without technical constraints (like name constraints), which goes a long way, but an unqualified claim like that would amount to a lie for us.\r\n> \r\n> I don't have stats on how often we'd fail as a result; I'd have to check with others.  It might take a very long time to find out if we don't have metrics already.\r\n> \r\n> We /can/ retry, but as you say it's a big performance hit that we'd only want to pay if we hit exceptional circumstances.  My sense is that unconstrained intermediates isn't exceptional.\r\n> \r\n> I am inclined to push for a semantic of \"I have all the *unconstrained* intermediates that I'm willing to accept\".  Or maybe \"I have all the intermediates from that I'm willing to accept, unless it's the WebPKI and then I only have unconstrained intermediates\"' if someone wants to assert that enumerating all the constrained intermediates is a reasonable ask in other settings.  A context-dependent interpretation is also possible, though that seems like a recipe for accidental interoperability failure.  If we specify an automatic retry, that sort of thing becomes a latent performance bug, which I'd prefer to avoid.\r\n",
+          "createdAt": "2022-02-16T05:39:47Z",
+          "updatedAt": "2022-02-16T05:39:47Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "https://blog.mozilla.org/security/2021/12/09/improved-quality-of-intermediate-certificates-with-enhanced-oversight-and-automation/ says MSRP 2.8 will require constrained intermediates. In that case then \"I have all the intermediates I am willing to accept\" may just suffice. ",
+          "createdAt": "2022-02-16T05:40:36Z",
+          "updatedAt": "2022-02-16T05:40:36Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Ilari \r\n\r\n> I would expect constrained intermediates to be quite rare. IIRC, there is a lot of red tape in Baseline Requirements about constrained ICAs.\r\n\r\n",
+          "createdAt": "2022-02-18T04:43:12Z",
+          "updatedAt": "2022-02-18T17:17:24Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Ilari, regarding potential solutions\r\n\r\n> MSRP 2.8 is slated for this year, so it might very well fix this issue for WebPKI.\r\n> \r\n> Another way to address the issue would be to write some text that the server might want to send any ICA that has not been publicly disclosed. As that is neutral to PKI and is exactly what makes constrained ICAs problematic here.",
+          "createdAt": "2022-02-18T17:17:16Z",
+          "updatedAt": "2022-02-18T17:17:16Z"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOCpw2285D-gfx",
+      "title": "Sending ICAs regardless (from Ryan S.)",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/7",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 3.1, \r\n> a server could choose not to send its intermediates regardless of the flag from the client, if it has reason to believe the issuing CAs do not exist in the client ICA list \r\n\r\nbut without reference to how practically that would be determined.",
+      "createdAt": "2022-02-16T19:23:36Z",
+      "updatedAt": "2022-03-02T14:22:24Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "We could work on the text. \r\n\r\nBasically if the server knows it got a cert from new ICA which is likely to not exist in the list it could just send the chain. Or if there is a special Private PKI usecase where the server changed ICAs and the clients will not know because they are not configured yet, it could do that. \r\n\r\nAlso, from https://github.com/csosto-pk/tls-suppress-intermediates/issues/4 , Ilari proposed to send chains that contain constrained intermediates because these may not be publicly available and this not in the peer list ",
+          "createdAt": "2022-02-16T19:25:07Z",
+          "updatedAt": "2022-03-02T14:22:24Z"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOCpw2285EJ0y-",
+      "title": "Update text to use one ICA suppression flag, not one per direction",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/8",
+      "state": "CLOSED",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "bug",
+        "TODO"
+      ],
+      "body": "Currently the draft defines TBD1 and TBD2 flag values, but that is unnecessary. \r\n\r\nIf the client asks for ICA suppression in the ClientHello then the acknowledgement would be in the Certificate message. \r\nIn the case of mutual auth, the server could still request ICA suppression in the CertRequest and get back the acknowledgement in the client Certificate message. \r\n\r\nSo we don't need two flags. We need to update the text to reflect that. ",
+      "createdAt": "2022-02-18T17:07:28Z",
+      "updatedAt": "2022-03-02T04:11:36Z",
+      "closedAt": "2022-03-02T04:11:35Z",
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in https://github.com/csosto-pk/tls-suppress-intermediates/commit/52db8d8d85c1b79c780100028d15f0aa88df6e82",
+          "createdAt": "2022-03-02T04:11:35Z",
+          "updatedAt": "2022-03-02T04:11:35Z"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "id": "I_kwDOCpw2285EKUws",
+      "title": "Acknowledge tlsflag or not?",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/9",
+      "state": "CLOSED",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "bug",
+        "TODO"
+      ],
+      "body": "According to the tlsflags draft, each flag is about some capability or some extension that is not part of the TLS base specification. Just because the client and server both support TLS 1.3 does not mean that they both support this extension or that they both have this capability.  If the client does not specify the flag, then the server cannot know that the client supports the extension. Conversely, if the server doesn\u2019t acknowledge it, then the client cannot know that the server supports the extension. The same is true for a flag proposed by the server in the certReq and acknowledged in the certificate message. So every flag needs to be acknowledged. \r\n\r\n>  A server that supports this extension and also supports at least one\r\n>  of the flag-type features that use this extension and that were\r\n>  declared by the ClientHello extension SHALL send this extension with\r\n>  the intersection of the flags it supports with the flags declared by\r\n>  the client.  The intersection operation may be implemented as a\r\n>  bitwise AND.\r\n>\r\n>  [...] Flag-type extensions that have\r\n>  been indicated in CR (and only such extensions) MAY be also be\r\n>  present in a flags extension of the Certificate (CT) message sent by\r\n>  the client.  However, a client MUST NOT indicate support for any\r\n>  flag-type feature in a Certificate message that was not previously\r\n>  indicated by the server in its CertificateRequest message.\r\n",
+      "createdAt": "2022-02-18T18:35:43Z",
+      "updatedAt": "2022-03-02T04:12:23Z",
+      "closedAt": "2022-03-02T04:12:23Z",
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Ilari\u2019s https://mailarchive.ietf.org/arch/msg/tls/EKJ38ve6kN-5BWGFDKoVs_T_Vi0/ and Martin\u2019s https://mailarchive.ietf.org/arch/msg/tls/DKgRTXxXuC2-0r52d0h96O2ZuRY/ comments  regarding tlsflags acknowledgements say that acknowledgements should not be required. \r\n\r\nBasically the argument is that the tlsflags behavior should be similar to extensions, which do not have an acknowledgment requirement by default in TLS. Special acknowledgement requirements are defined normatively per extension. Generally the reason is that flags are like extensions and extensions advertise capabilities like compressing a cert and require no acknowledgement. In other words, if an acknowledgement is required for a specific flag it could be specified for that flag, but the general case does not need to require acknowledgement as it most usually will be a request for something which the peer will or will not do. \r\n\r\nThe WG would need to reach consensus on acknowledging tlsflags by default or not. ",
+          "createdAt": "2022-02-18T18:37:12Z",
+          "updatedAt": "2022-02-18T19:09:45Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Ilari \r\n\r\n> Regarding actual need for acknowledgement for this flag, I think that server acknowledging it could be useful so client knows if retrying without flag could be useful or not.\r\n> \r\n> For the client acknowledging it, I find that much less useful. If server proposes the extension, it better have exhaustive issuer list, be using certificates as just holders for raw public keys, or using certificate fingerprints for identification. Anything else looks like it is asking for trouble.",
+          "createdAt": "2022-02-18T19:10:04Z",
+          "updatedAt": "2022-02-18T19:10:04Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Yoav crated [issue](https://github.com/tlswg/tls-flags/issues/19)  and [PR](https://github.com/tlswg/tls-flags/pull/20)  for this in the tlsflags draft after discussing in the [list](https://mailarchive.ietf.org/arch/msg/tls/-1-fXYuW1MUlWo3vE6gOWY38j7s/) . Language was changed to not require tlsflag acknowledgement. \r\n\r\nWe ought to update the draft to not require an acknowledgement.",
+          "createdAt": "2022-02-23T05:09:04Z",
+          "updatedAt": "2022-02-26T04:19:40Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in https://github.com/csosto-pk/tls-suppress-intermediates/commit/52db8d8d85c1b79c780100028d15f0aa88df6e82",
+          "createdAt": "2022-03-02T04:12:23Z",
+          "updatedAt": "2022-03-02T04:12:23Z"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOCpw2285ENGmv",
+      "title": "Data on ICA list changes over time and TBD3",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/10",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "question"
+      ],
+      "body": "It would be interesting to collect data on how ICA lists changes over time. We could focus one WebPKI since there is more data for that usecase.\r\n\r\nWe could study the changes over time in the Firefox list https://ccadb-public.secure.force.com/mozilla/MozillaIntermediateCertsCSVReport , https://github.com/FiloSottile/intermediates, or ICA in CT logs over time. \r\n\r\nThat would help us identify realistic values for TBD3. \r\n\r\nAlso, the text about TBD3 should clarify that the recommended time for WebPKI should TBD3, but other usecases may be different. A static Private PKI that rarely changes could make TBD3 months. etc. ",
+      "createdAt": "2022-02-19T03:47:53Z",
+      "updatedAt": "2022-02-26T04:17:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Ilari \r\n\r\n> I only have some isolated random datapoints on number of disclosed WebPKI ICAs since 2021-02-08 (a bit over year ago), but during that time, that number has grown from 1669 to 1820.",
+          "createdAt": "2022-02-26T04:16:33Z",
+          "updatedAt": "2022-02-26T04:16:33Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "> I only have some isolated random datapoints on number of disclosed WebPKI ICAs since 2021-02-08 (a bit over year ago), but during that time, that number has grown from 1669 to 1820. \r\n\r\nUnderstood. \r\n\r\nWe are looking into how we could quantify how the complete ICA list changes over time in order to evaluate TBD3. Probably it would be in the days to weeks timeline than years, but that remains to be seen. Of course that would not cover usecases other than WebPKI, but probably that is the more dynamic one. ",
+          "createdAt": "2022-02-26T04:17:31Z",
+          "updatedAt": "2022-02-26T04:17:31Z"
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOCpw2285ENHvU",
+      "title": "Crisper text on what the client capabilities are",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/11",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "enhancement",
+        "TODO"
+      ],
+      "body": "From Ryan S. \r\n\r\n> Basically, it needs to be a little crisper what the client capabilities are. Presently, it handwaves them as out-of-scope, but as a consequence, makes it difficult to justify the assumptions/complexity that they hide. Does the client have durable storage (e.g. does the IoT device need rewritable media and not just ROM)? Does the client have a reliable (within TBD3) out-of-band update mechanism for metadata such as intermediates? Is the TLS implementation expected to be able to re-establish a connection (which many TLS APIs are not themselves responsible for, or at least, abstract that away)? These all affect the shape of the present design, but also any simplifications.\r\n\r\nWe ought to crisp up the text more. ",
+      "createdAt": "2022-02-19T03:51:30Z",
+      "updatedAt": "2022-02-19T03:55:41Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 12,
+      "id": "I_kwDOCpw2285ENI5K",
+      "title": "Crisper language regarding the impact connection re-establishment has on fingerprinting and privacy",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/12",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "enhancement",
+        "TODO"
+      ],
+      "body": "From Ryan S.\r\n\r\n> It seems like the choice to reintroduce \"connection re-establishment\" logic would have bearing on the security and privacy assumptions here, and is worth making sure it's captured.\r\n\r\nWe ought to beef up the text. ",
+      "createdAt": "2022-02-19T03:55:12Z",
+      "updatedAt": "2022-02-26T04:24:38Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "By Ilari \r\n\r\n> It seems to me that the dominant failure modes are:\r\n> - Using old ICA list that is missing some newly minted ICA.\r\n> - Using custom TA that is missing ICA data.\r\n\r\n>Regarding security and privacy, the most severe impact of any attack I can come up with is determining if some arbitrary ICA is on the ICA list or not (for passive attacks, that is restricted to the issuing ICA used by the server). Practical impact of attacker being able to do that depends on how many endpoints share that same ICA list.\r\n> \r\n> Rough outline of the attack (active variant): Fabricate a certificate purporting to be from some ICA, send it to client and observe if the client retries (ICA not on the list) or just fails (ICA is on the list).\r\n\r\n",
+          "createdAt": "2022-02-26T04:13:27Z",
+          "updatedAt": "2022-02-26T04:13:27Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "By Ryan S.\r\n\r\n>> Regarding security and privacy, the most severe impact of any attack\r\n>> I can come up with is determining if some arbitrary ICA is on the\r\n>> ICA list or not (for passive attacks, that is restricted to the issuing\r\n>> ICA used by the server). Practical impact of attacker being able to do\r\n>> that depends on how many endpoints share that same ICA list.\r\n>> \r\n>> Rough outline of the attack (active variant): Fabricate a certificate\r\n>> purporting to be from some ICA, send it to client and observe if the\r\n>> client retries (ICA not on the list) or just fails (ICA is on the list).\r\n> \r\n> I'm hopeful that some may be interested to perform a more thorough analysis. We saw enough complexity with respect to previous TLS versions and the fallback logic being possible to induce downgrade attacks that I think we should be very wary about introducing a class of anticipated handshake failures that require connection re-establishment, especially across independent TLS sessions. I realize that sounds a little like FUD, but rather: every time we've tried to do this, it's blown up spectacularly, so we need to make sure we're not setting up another bomb.\r\n> \r\n> I also think the active attack analysis is a bit lacking, especially since the attacker has the ability to mint arbitrary ICAs on demand, without running afoul of any existing client policies. For example, for the Web PKI, by virtue of nameConstraints without pathLen in the basicConstraints, the site can mint arbitrary ICAs and arbitrary EE certificates. Combined with the discovery mechanism discussed, this is effectively the same as other forms of stateful tracking (ala HSTS tracking), and thus likely to be subjected to the same mitigations that would largely render the benefits here ineffective, at best.\r\n",
+          "createdAt": "2022-02-26T04:15:05Z",
+          "updatedAt": "2022-02-26T04:15:05Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Ilari \r\n\r\n> I'm hopeful that some may be interested to perform a more thorough \r\n> analysis. We saw enough complexity with respect to previous TLS \r\n> versions and the fallback logic being possible to induce downgrade \r\n> attacks that I think we should be very wary about introducing a class \r\n> of anticipated handshake failures that require connection \r\n> re-establishment, especially across independent TLS sessions. I \r\n> realize that sounds a little like FUD, but rather: every time we've \r\n> tried to do this, it's blown up spectacularly, so we need to make sure we're not setting up another bomb.\r\n\r\nI have hard time seeing how one could construct downgrade attack out of this, as it just requests extra data from server on fallback. For most other retry stuff, downgrade attack risk is obvious as less secure modes are introduced / more secure modes are removed.\r\n\r\n> I also think the active attack analysis is a bit lacking, especially \r\n> since the attacker has the ability to mint arbitrary ICAs on demand, \r\n> without running afoul of any existing client policies. For example, \r\n> for the Web PKI, by virtue of nameConstraints without pathLen in the \r\n> basicConstraints, the site can mint arbitrary ICAs and arbitrary EE \r\n> certificates. Combined with the discovery mechanism discussed, this is \r\n> effectively the same as other forms of stateful tracking (ala HSTS \r\n> tracking), and thus likely to be subjected to the same mitigations \r\n> that would largely render the benefits here ineffective, at best.\r\n\r\nHaving pathLen >= 1 would do as well, right?\r\n\r\nAnd such ICAs can already be abused for tracking if the browser does transvalidity. Suppress ICAs flag would make it worse, by allowing other sites to read such tracking supercookies.\r\n\r\nDefense is not doing transvalidity nor cached AIA chasing (since those caches represent state that could be attacked). This closes the attack for both with and without suppress ICAs.\r\n\r\nAnother defense to make reading ICA list harder would be to always trigger fallback if certificate validation fails and ICAs were suppressed.\r\n\r\nNeither defense would render suppress ICAs ineffective, since in vast majority of cases one can use quasi-static ICA list to build verifiable certificate chain and then use that with no fallback.\r\n",
+          "createdAt": "2022-02-26T04:23:13Z",
+          "updatedAt": "2022-02-26T04:23:13Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Ryan S. \r\n\r\n> I have hard time seeing how one could construct downgrade attack out of this, as it just requests extra data from server on fallback. For most other retry stuff, downgrade attack risk is obvious as less secure modes are introduced / more secure modes are removed.\r\n\r\nI think I\u2019m raising a question about whether or not implementations will actually do this, and arguably, to explicitly specify this if this is the expectation. In theory, yes, if the only thing changing in a fallback is an optional flag, it \u201cshouldn\u2019t\u201d have concerns. In practice, however, these sorts of fallbacks (e.g. various server bug workarounds) introduce compositions that cause new and unexpected interactions. This is why the ecosystem has tried very hard to avoid fallbacks (c.f. TLS 1.3) and ensuring that both parties are able to commit to the negotiation. We saw this with the renegotiation issues getting confused state from the initial handshake.\r\n\r\n> Having pathLen >= 1 would do as well, right?\r\n\r\nSure, \u201cwithout pathLen constraints\u201d\r\n\r\n> And such ICAs can already be abused for tracking if the browser does transvalidity. Suppress ICAs flag would make it worse, by allowing othersites to read such tracking supercookies.\r\n\r\nTransvalidity was never something widely supported outside of a specific product/library (Mozilla NSS). But yes, this is the point: this feature gives a much stronger signal.\r\n\r\n> Defense is not doing transvalidity nor cached AIA chasing (since those caches represent state that could be attacked). This closes the attack for both with and without suppress ICAs.\r\n\r\nI fail to see how it closes it without suppress ICAs, particularly because the current draft very explicitly suggests caching as a possibility.  And yes, implementations that wish to mitigate cross-context tracking are working to isolate those caches, and this was my point: doesn\u2019t this isolation defeat the benefits of the caching / the likelihood of intermediate omission succeeding, and functionally mean that there needs to be a reliable, semi-real-time distribution mechanism for intermediates to achieve the benefits?\r\n\r\nI\u2019m trying to look at this from a systems perspective, and tease out explicitly: what is this solution assuming exists in order to achieve the desired effect, and with those assumptions, are there simpler/less-risky/alternative technical solutions? Not to bikeshed, but because the design assumptions here are unstated and have practical and meaningful ecosystem effect, and so we at least owe that much.\r\n",
+          "createdAt": "2022-02-26T04:24:38Z",
+          "updatedAt": "2022-02-26T04:24:38Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 3,
+      "id": "PR_kwDOCpw2284wS6Ke",
+      "title": "Update i-d-template and run \"make fix-lint\"",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/pull/3",
+      "state": "MERGED",
+      "author": "bwesterb",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-12-27T08:50:27Z",
+      "updatedAt": "2021-12-27T20:17:49Z",
+      "baseRepository": "csosto-pk/tls-suppress-intermediates",
+      "baseRefName": "main",
+      "baseRefOid": "ee483815b93a028c59431356056362bf4e47ab38",
+      "headRepository": "csosto-pk/tls-suppress-intermediates",
+      "headRefName": "update-idt",
+      "headRefOid": "ce8831ae66fe179af1af9b9917e8f4e602b320dd",
+      "closedAt": "2021-12-27T20:16:59Z",
+      "mergedAt": "2021-12-27T20:16:59Z",
+      "mergedBy": "csosto-pk",
+      "mergeCommit": {
+        "oid": "b1e4248900969c8824cbcd47ab88aee385fda07e"
+      },
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Merging, but do we need all these space removals at the end of the line @bwesterb ?",
+          "createdAt": "2021-12-27T20:16:52Z",
+          "updatedAt": "2021-12-27T20:16:52Z"
+        },
+        {
+          "author": "bwesterb",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\ud83e\udd37 done automatically by the linter ",
+          "createdAt": "2021-12-27T20:17:49Z",
+          "updatedAt": "2021-12-27T20:17:49Z"
+        }
+      ],
+      "reviews": []
+    }
+  ]
+}
