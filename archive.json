@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-03T00:54:30.143218+00:00",
+  "timestamp": "2022-03-20T00:53:52.887375+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -421,6 +421,45 @@
           "updatedAt": "2022-02-26T04:24:38Z"
         }
       ]
+    },
+    {
+      "number": 13,
+      "id": "I_kwDOCpw2285F2Z5X",
+      "title": "Add Acknowledgements section",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/13",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "csosto-pk"
+      ],
+      "labels": [
+        "TODO"
+      ],
+      "body": "Add Filippo Valsorda in the acknowledgements",
+      "createdAt": "2022-03-17T03:32:38Z",
+      "updatedAt": "2022-03-17T03:32:38Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOCpw2285F2aRL",
+      "title": "CCADB to host WebPKI ICA list",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/14",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "enhancement",
+        "question"
+      ],
+      "body": "If a 3rd party repo was hosting the ICA list for WebPKI, then we could limit outages because \r\n- all clients would have the same version (assuming within time interval). \r\n- servers could check if their ICAs are in the list (assuming within time interval) and if not they could just send them regardless of the flag\r\n\r\nWe should think about this more. ",
+      "createdAt": "2022-03-17T03:36:01Z",
+      "updatedAt": "2022-03-17T03:36:12Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
