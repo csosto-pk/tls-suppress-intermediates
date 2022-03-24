@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-20T00:53:52.887375+00:00",
+  "timestamp": "2022-03-24T00:56:30.081806+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -71,7 +71,7 @@
     {
       "number": 2,
       "id": "I_kwDOCpw2285A5C-t",
-      "title": "Intermediate CA change or chain validation failure scenario",
+      "title": "Intermediate CA change or chain validation failure",
       "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/2",
       "state": "OPEN",
       "author": "csosto-pk",
@@ -80,7 +80,7 @@
       "labels": [],
       "body": "From [Watson L.](https://mailarchive.ietf.org/arch/msg/tls/KAAKiEki36gL8g40ZimNHk39OXY/) \r\n\r\n> Suppose the following sequence of events happen:\r\n> 1: A CA uses a new intermediate for reasons (no longer cross-signing, etc.)\r\n> 2: A site gets a certificate from the new intermediate.\r\n> 3: An older firefox version connects and thinks it knows all the certificates in the world.\r\n> \r\n> This would seem to break and it wasn't clear to me how this would be handled. ",
       "createdAt": "2021-12-26T04:24:12Z",
-      "updatedAt": "2022-02-18T17:15:40Z",
+      "updatedAt": "2022-03-23T15:24:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -100,9 +100,9 @@
         {
           "author": "csosto-pk",
           "authorAssociation": "OWNER",
-          "body": "In https://mailarchive.ietf.org/arch/msg/tls/Zp4GfjXaCrtmVwfVEst-iD_-Njw/ Ryan S. was pointing out that if we are willing to assume that there is a mechanism for the ICA list to be delivered OOB then maybe we can simplify the failure scenario.",
+          "body": "In https://mailarchive.ietf.org/arch/msg/tls/Zp4GfjXaCrtmVwfVEst-iD_-Njw/ Ryan S. was pointing out that if we are willing to assume that there is a mechanism for the ICA list to be delivered OOB then maybe we can simplify the failure scenario.\r\n\r\nHe also mentioned the statefulness issue  \r\n> As you captured later, this is (effectively) reintroducing TLS fallback. We worked very hard to try to minimize that, and while there are retries (ala HRR), they're integrated into the connection state machine. Needing to re-establish a new connection, sans flag, is a very big failure mode here, and one that definitely influences the shape of API design.",
           "createdAt": "2022-02-18T17:10:36Z",
-          "updatedAt": "2022-02-18T17:10:36Z"
+          "updatedAt": "2022-03-23T13:31:25Z"
         },
         {
           "author": "csosto-pk",
@@ -110,6 +110,27 @@
           "body": "Related issues \r\n- https://github.com/csosto-pk/tls-suppress-intermediates/issues/6 talks about constrained intermediates and how they are not available and cause failures. What assumptions we could make and potential solution to have the server send the chain regardless if it knows it has a constrained intermediate. \r\n- https://github.com/csosto-pk/tls-suppress-intermediates/issues/4 talks about a potential solution for the server to keep state in a ticket so it knows the client has the ICA or not. Not sure at this time if it is worth the effort. ",
           "createdAt": "2022-02-18T17:15:40Z",
           "updatedAt": "2022-02-18T17:15:40Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "As Chris Patton pointed out to Bas, there is precedent for the abort-and-retry: For ECH when the server can't decrypt the inner CH, it aborts the connection and the client tries again.",
+          "createdAt": "2022-03-23T13:32:17Z",
+          "updatedAt": "2022-03-23T13:32:17Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "David Benjamin also made a good point in IETF-113 which is that because of the TBD3 freshness requirement practically we are taking WebPKI out because most clients are not up to date, so they will not be fresh and thus not use the feature. That had not occurred to me. \r\n\r\nSo, I am thinking if we want this to work in PKI we probably cannot require the ICA to be TBD3 fresh. To make it work for the Web we \r\n- either have to have a way to avoid the false start as we had discussed before https://github.com/csosto-pk/tls-suppress-intermediates/issues/4 \r\n- or push for an external ICA list source of truth (e.g. CCADB) which could be used by the sender to confirm if its ICA are in the list https://github.com/csosto-pk/tls-suppress-intermediates/issues/14 , https://github.com/csosto-pk/tls-suppress-intermediates/issues/7\r\n- have a fallback mechanism like what you are describing in ECH\r\n",
+          "createdAt": "2022-03-23T13:35:14Z",
+          "updatedAt": "2022-03-23T13:51:09Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If clients only need to have an update within the last week, some/many might be able to use the feature.",
+          "createdAt": "2022-03-23T15:24:21Z",
+          "updatedAt": "2022-03-23T15:24:21Z"
         }
       ]
     },
@@ -235,7 +256,7 @@
       "labels": [],
       "body": "Section 3.1, \r\n> a server could choose not to send its intermediates regardless of the flag from the client, if it has reason to believe the issuing CAs do not exist in the client ICA list \r\n\r\nbut without reference to how practically that would be determined.",
       "createdAt": "2022-02-16T19:23:36Z",
-      "updatedAt": "2022-03-02T14:22:24Z",
+      "updatedAt": "2022-03-23T13:33:13Z",
       "closedAt": null,
       "comments": [
         {
@@ -244,6 +265,13 @@
           "body": "We could work on the text. \r\n\r\nBasically if the server knows it got a cert from new ICA which is likely to not exist in the list it could just send the chain. Or if there is a special Private PKI usecase where the server changed ICAs and the clients will not know because they are not configured yet, it could do that. \r\n\r\nAlso, from https://github.com/csosto-pk/tls-suppress-intermediates/issues/4 , Ilari proposed to send chains that contain constrained intermediates because these may not be publicly available and this not in the peer list ",
           "createdAt": "2022-02-16T19:25:07Z",
           "updatedAt": "2022-03-02T14:22:24Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "If the CA list is hosted by a third party like CCADB the server could also send its ICAs if they do not exist in the list. ",
+          "createdAt": "2022-03-23T13:33:13Z",
+          "updatedAt": "2022-03-23T13:33:13Z"
         }
       ]
     },
@@ -336,7 +364,7 @@
       ],
       "body": "It would be interesting to collect data on how ICA lists changes over time. We could focus one WebPKI since there is more data for that usecase.\r\n\r\nWe could study the changes over time in the Firefox list https://ccadb-public.secure.force.com/mozilla/MozillaIntermediateCertsCSVReport , https://github.com/FiloSottile/intermediates, or ICA in CT logs over time. \r\n\r\nThat would help us identify realistic values for TBD3. \r\n\r\nAlso, the text about TBD3 should clarify that the recommended time for WebPKI should TBD3, but other usecases may be different. A static Private PKI that rarely changes could make TBD3 months. etc. ",
       "createdAt": "2022-02-19T03:47:53Z",
-      "updatedAt": "2022-02-26T04:17:31Z",
+      "updatedAt": "2022-03-23T17:15:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -352,6 +380,27 @@
           "body": "> I only have some isolated random datapoints on number of disclosed WebPKI ICAs since 2021-02-08 (a bit over year ago), but during that time, that number has grown from 1669 to 1820. \r\n\r\nUnderstood. \r\n\r\nWe are looking into how we could quantify how the complete ICA list changes over time in order to evaluate TBD3. Probably it would be in the days to weeks timeline than years, but that remains to be seen. Of course that would not cover usecases other than WebPKI, but probably that is the more dynamic one. ",
           "createdAt": "2022-02-26T04:17:31Z",
           "updatedAt": "2022-02-26T04:17:31Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "David Benjamin brought up in IETF-113 that this would not work for WebPKI, maybe for other usecases. Reason being that browsers are usually not up to date and thus they will not have the latest ICA list and thus they will usually fall out of the TBD3-time and suppression will not kick in. \r\n\r\nWe could consider making TBD3 longer in order to prevent that, but then you increase the risk of a failure. \r\n\r\nAs explained in https://github.com/csosto-pk/tls-suppress-intermediates/issues/2#issuecomment-1076383064 , we probably cannot require the ICA to be TBD3 fresh. We probably have to try to eliminate failures as much as we can, but we will have to have a fallback mechanism.\r\n\r\n- [ ] If we end up not using TBD3, then we do not need to investigate how often the ICA list changes, but we should find the diff of the ICA lists and the number of leaf certs that tie to the diffs. That should give us a feeling for how many failures would be introduced  between ICA list updates @bwesterb what do you think ?",
+          "createdAt": "2022-03-23T11:01:34Z",
+          "updatedAt": "2022-03-23T14:59:54Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": ">> As explained in https://github.com/csosto-pk/tls-suppress-intermediates/issues/2#issuecomment-1076383064 , we probably cannot require the ICA to be TBD3 fresh. We probably have to try to eliminate failures as much as we can, but we will have to have a fallback mechanism.\r\n\r\n> I don't see this concern: don't browsers update a lot of state already out-of-band of the normal software updates? For instance: crlite for revocations?\r\n\r\nYes, we could make that argument for CRLite or browser revocation blacklist whatever and Mozilla\u2019s ICA Pre-load list. And it is a good argument. \r\n\r\nBut I guess the difference is that in these cases when the \u201clist\u201d is not up-to-date (I think it probably is the case for most browsers), you are not making things worse. I mean, you might miss a revoked cert but that will not cause an extra failure (you add a security concern, but not a failure. Don\u2019t ask me which is worse). Or you might not be able to build the chain because your ICA preload list is wrong, but that connection would have failed anyway. \r\n\r\nIn our case, \r\n- If we don\u2019t have the freshness requirement we will introduce failures caused by the feature. Shouldn\u2019t we avoid making things worse? \r\n- If we require the freshness, we practically will not use it for the majority of connections because most Web clients will not be TBD3 days up-to-date. If we want the draft to help WebPKI, we probably should avoid that, right?\r\n",
+          "createdAt": "2022-03-23T14:57:59Z",
+          "updatedAt": "2022-03-23T14:57:59Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "From Bas \r\n> Is it the case that a browser couldn't keep the list up-to-date within a day the majority of the time?\r\n\r\nI tend to think yes, but I may be wrong. David Benjamin seemed to suggest so. \r\n\r\nFrom Martin in https://github.com/csosto-pk/tls-suppress-intermediates/issues/2#issuecomment-1076486500\r\n> If clients only need to have an update within the last week, some/many might be able to use the feature.\r\n\r\n- [ ] I think we ought to dig deeper there. I will fire off another email yo ask David Benjamin what data he has on how stale these lists are.\r\n- [ ] If we end up not using TBD3, then we do not need to investigate how often the ICA list changes, but we should find the diff of the ICA lists and the number of leaf certs that tie to the diffs. That should give us a feeling for how many failures would be introduced between ICA list updates @bwesterb what do you think ?\r\n",
+          "createdAt": "2022-03-23T15:29:43Z",
+          "updatedAt": "2022-03-23T17:15:26Z"
         }
       ]
     },
@@ -450,14 +499,37 @@
       "state": "OPEN",
       "author": "csosto-pk",
       "authorAssociation": "OWNER",
-      "assignees": [],
+      "assignees": [
+        "csosto-pk"
+      ],
       "labels": [
         "enhancement",
-        "question"
+        "question",
+        "TODO"
       ],
-      "body": "If a 3rd party repo was hosting the ICA list for WebPKI, then we could limit outages because \r\n- all clients would have the same version (assuming within time interval). \r\n- servers could check if their ICAs are in the list (assuming within time interval) and if not they could just send them regardless of the flag\r\n\r\nWe should think about this more. ",
+      "body": "If a 3rd party repo was hosting the ICA list for WebPKI, then we could limit outages because \r\n- all clients would have the same version (assuming within time interval). \r\n- servers could check if their ICAs are in the list (assuming within time interval) and if not they could just send them regardless of the flag (also discussed in https://github.com/csosto-pk/tls-suppress-intermediates/issues/7)\r\n\r\nWe should think about this more. ",
       "createdAt": "2022-03-17T03:36:01Z",
-      "updatedAt": "2022-03-17T03:36:12Z",
+      "updatedAt": "2022-03-23T14:04:11Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOCpw2285GOQFO",
+      "title": "Consider making draft Experimental",
+      "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/15",
+      "state": "OPEN",
+      "author": "csosto-pk",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "help wanted",
+        "question",
+        "TODO"
+      ],
+      "body": "We could make the draft Experimental draft so TLS implementers don\u2019t feel mandated to support it. \r\n\r\nSimilar examples include early versions of [draft-ietf-tls-subcert](https://datatracker.ietf.org/doc/html/draft-ietf-tls-subcerts) and [draft-ietf-tls-esni](https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni)",
+      "createdAt": "2022-03-23T13:41:17Z",
+      "updatedAt": "2022-03-23T13:41:33Z",
       "closedAt": null,
       "comments": []
     }
