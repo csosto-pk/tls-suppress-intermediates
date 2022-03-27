@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-24T00:56:30.081806+00:00",
+  "timestamp": "2022-03-27T00:59:02.263361+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -364,7 +364,7 @@
       ],
       "body": "It would be interesting to collect data on how ICA lists changes over time. We could focus one WebPKI since there is more data for that usecase.\r\n\r\nWe could study the changes over time in the Firefox list https://ccadb-public.secure.force.com/mozilla/MozillaIntermediateCertsCSVReport , https://github.com/FiloSottile/intermediates, or ICA in CT logs over time. \r\n\r\nThat would help us identify realistic values for TBD3. \r\n\r\nAlso, the text about TBD3 should clarify that the recommended time for WebPKI should TBD3, but other usecases may be different. A static Private PKI that rarely changes could make TBD3 months. etc. ",
       "createdAt": "2022-02-19T03:47:53Z",
-      "updatedAt": "2022-03-23T17:15:26Z",
+      "updatedAt": "2022-03-26T03:29:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -401,6 +401,27 @@
           "body": "From Bas \r\n> Is it the case that a browser couldn't keep the list up-to-date within a day the majority of the time?\r\n\r\nI tend to think yes, but I may be wrong. David Benjamin seemed to suggest so. \r\n\r\nFrom Martin in https://github.com/csosto-pk/tls-suppress-intermediates/issues/2#issuecomment-1076486500\r\n> If clients only need to have an update within the last week, some/many might be able to use the feature.\r\n\r\n- [ ] I think we ought to dig deeper there. I will fire off another email yo ask David Benjamin what data he has on how stale these lists are.\r\n- [ ] If we end up not using TBD3, then we do not need to investigate how often the ICA list changes, but we should find the diff of the ICA lists and the number of leaf certs that tie to the diffs. That should give us a feeling for how many failures would be introduced between ICA list updates @bwesterb what do you think ?\r\n",
           "createdAt": "2022-03-23T15:29:43Z",
           "updatedAt": "2022-03-23T17:15:26Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "David B. commented regarding the RBD3 freshness requirement \r\n\r\n> It's needlessly flaky for clients that don't manage to update their list. Clients that don't get updates either can't participate in this mechanism or have to drop out immediately.\r\n> \r\n> It also gets complicated with user-added roots. A client may have intermediates for publicly-trusted roots preloaded, but probably doesn't have them for user-added roots. Now, you could say, oh, we assume the server knows whether it's using one the client believes is preloaded. But that makes our already rather flaky trust anchor agility story even more flaky. Publicly-accessible servers, after all, have to support more than one client.\r\n> \r\n> The pre-IETF version of QUIC had a version of this mechanism, but it was much more robust. It gave names to preloaded intermediate sets. While more work to specify, I think that's a better and more robust direction to go here.",
+          "createdAt": "2022-03-25T16:18:40Z",
+          "updatedAt": "2022-03-25T16:18:40Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "> So the idea is that you rely on the client to shut off the optimization after a period of time when stale?\r\n\r\nYes, but that could lead to inadvertent failures. Ryan Sleevi was pointing out that these are problematic, so we were also thinking that if there was a third party like CCADB to host these ICA lists then the server could also make a decision to send its ICAs regardless if it knows they don\u2019t exist in the list. That should prevent even more failures. \r\n\r\n> It's needlessly flaky for clients that don't manage to update their list. Clients that don't get updates either can't participate in this mechanism or have to drop out immediately.\r\n\r\nRight. It is a tradeoff for picking the freshness requirement TBD3-time the prevents failures but also gets to prevent sending ICAs as much as possible. We plan to study the WebPKI ICA list change frequency for the ICA list to get more concrete data before thinking about the best TBD3. \r\n\r\n> A client may have intermediates for publicly-trusted roots preloaded, but probably doesn't have them for user-added roots.\r\n\r\nTrue, isn\u2019t that usecase kind of rare though? \r\nIf we manage to have a common CCADB ICA list (for WebPKI) then the server could use that to make the decision itself, but I get your point. \r\n\r\n> It gave names to preloaded intermediate sets. While more work to specify, I think that's a better and more robust direction to go here.\r\n\r\nAgreed. We probably will investigate that with CCADB. Probably we should keep it simple if possible without defining list versions, but at the same time we want as much use as possible. If CCADB is receptive to it, I think we can come up with something. \r\n",
+          "createdAt": "2022-03-26T03:27:24Z",
+          "updatedAt": "2022-03-26T03:27:24Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "I think the action items left here \r\n- [ ] Investigate with CCADB hosting the ICAs\r\n- [ ] Look into what TBD3-time seems like the best option.\r\n- [ ] Consider customer loaded Root use case.\r\n- [ ] If we end up not using TBD3, then we do not need to investigate how often the ICA list changes, but we should find the diff of the ICA lists and the number of leaf certs that tie to the diffs. That should give us a feeling for how many failures would be introduced between ICA list updates @bwesterb what do you think ?",
+          "createdAt": "2022-03-26T03:28:28Z",
+          "updatedAt": "2022-03-26T03:29:35Z"
         }
       ]
     },
