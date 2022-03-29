@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-27T00:59:02.263361+00:00",
+  "timestamp": "2022-03-29T01:00:03.809465+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -360,11 +360,12 @@
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [
-        "question"
+        "question",
+        "TODO"
       ],
       "body": "It would be interesting to collect data on how ICA lists changes over time. We could focus one WebPKI since there is more data for that usecase.\r\n\r\nWe could study the changes over time in the Firefox list https://ccadb-public.secure.force.com/mozilla/MozillaIntermediateCertsCSVReport , https://github.com/FiloSottile/intermediates, or ICA in CT logs over time. \r\n\r\nThat would help us identify realistic values for TBD3. \r\n\r\nAlso, the text about TBD3 should clarify that the recommended time for WebPKI should TBD3, but other usecases may be different. A static Private PKI that rarely changes could make TBD3 months. etc. ",
       "createdAt": "2022-02-19T03:47:53Z",
-      "updatedAt": "2022-03-26T03:29:36Z",
+      "updatedAt": "2022-03-27T01:43:34Z",
       "closedAt": null,
       "comments": [
         {
