@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-29T01:00:03.809465+00:00",
+  "timestamp": "2022-04-03T01:01:10.911241+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -80,7 +80,7 @@
       "labels": [],
       "body": "From [Watson L.](https://mailarchive.ietf.org/arch/msg/tls/KAAKiEki36gL8g40ZimNHk39OXY/) \r\n\r\n> Suppose the following sequence of events happen:\r\n> 1: A CA uses a new intermediate for reasons (no longer cross-signing, etc.)\r\n> 2: A site gets a certificate from the new intermediate.\r\n> 3: An older firefox version connects and thinks it knows all the certificates in the world.\r\n> \r\n> This would seem to break and it wasn't clear to me how this would be handled. ",
       "createdAt": "2021-12-26T04:24:12Z",
-      "updatedAt": "2022-03-23T15:24:21Z",
+      "updatedAt": "2022-04-01T16:20:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -131,6 +131,27 @@
           "body": "If clients only need to have an update within the last week, some/many might be able to use the feature.",
           "createdAt": "2022-03-23T15:24:21Z",
           "updatedAt": "2022-03-23T15:24:21Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Clarification on David B.'s comment \r\n\r\n> So the idea is that you rely on the client to shut off the optimization after a period of time when stale? That's less immediately broken, but still seems questionable. It's needlessly flaky for clients that don't manage to update their list. Clients that don't get updates either can't participate in this mechanism or have to drop out immediately.\r\n> \r\n> It also gets complicated with user-added roots. A client may have intermediates for publicly-trusted roots preloaded, but probably doesn't have them for user-added roots. Now, you could say, oh, we assume the server knows whether it's using one the client believes is preloaded. But that makes our already rather flaky trust anchor agility story even more flaky. Publicly-accessible servers, after all, have to support more than one client.\r\n> \r\n> The pre-IETF version of QUIC had a version of this mechanism, but it was much more robust. It gave names to preloaded intermediate sets. While more work to specify, I think that's a better and more robust direction to go here.",
+          "createdAt": "2022-04-01T16:17:37Z",
+          "updatedAt": "2022-04-01T16:17:37Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "> Clarification on David B.'s comment\r\n> \r\n> > So the idea is that you rely on the client to shut off the optimization after a period of time when stale? \r\n\r\nYes, but that could lead to inadvertent failures. Ryan Sleevi was pointing out that these are problematic, so we were also thinking that if there was a third party like CCADB to host these ICA lists then the server could also make a decision to send its ICAs regardless if it knows they don\u2019t exist in the list. That should prevent even more failures. \r\n\r\n> > It's needlessly flaky for clients that don't manage to update their list. Clients that don't get updates either can't participate in this mechanism or have to drop out immediately.\r\n\r\nRight. It is a tradeoff for picking the freshness requirement TBD3-time the prevents failures but also gets to prevent sending ICAs as much as possible. We plan to study the WebPKI ICA list change frequency for the ICA list to get more concrete data before thinking about the best TBD3. \r\n\r\n> > It also gets complicated with user-added roots. A client may have intermediates for publicly-trusted roots preloaded, but probably doesn't have them for user-added roots. \r\n\r\nTrue, isn\u2019t that usecase kind of rare though? \r\nIf we manage to have a common CCADB ICA list (for WebPKI) then the server could use that to make the decision itself, but I get your point. \r\n\r\nNow, you could say, oh, we assume the server knows whether it's using one the client believes is preloaded. But that makes our already rather flaky trust anchor agility story even more flaky. Publicly-accessible servers, after all, have to support more than one client.\r\n\r\n> > The pre-IETF version of QUIC had a version of this mechanism, but it was much more robust. It gave names to preloaded intermediate sets. While more work to specify, I think that's a better and more robust direction to go here.\r\n\r\nAgreed. We probably will investigate that with CCADB. Probably we should keep it simple if possible without defining list versions, but at the same time we want as much use as possible. If CCADB is receptive to it, I think we can come up with something. \r\n\r\n\r\n",
+          "createdAt": "2022-04-01T16:19:58Z",
+          "updatedAt": "2022-04-01T16:19:58Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Mechanism that Bas suggested \r\n\r\n> A browser will only send the flag if its list of intermediates has been updated within the last 24 hours.  When a server receives the flag, it will suppress the intermediates unless all the included SCTs for the leaf are less than 96 hours old. That leaves the browser vendor 24 hours to detect a missing intermediate and/or ship it into its list. An obvious downside is that we're serving the intermediates the first 96 hours, but that can be prevented with reissue by having certbot pre-request the certificate. There are other reasons that certbot might want to do this \u2014 for instance to include the proof-of-inclusion into the certificate instead of a bigger post-quantum SCT.",
+          "createdAt": "2022-04-01T16:20:34Z",
+          "updatedAt": "2022-04-01T16:20:34Z"
         }
       ]
     },
@@ -531,9 +552,17 @@
       ],
       "body": "If a 3rd party repo was hosting the ICA list for WebPKI, then we could limit outages because \r\n- all clients would have the same version (assuming within time interval). \r\n- servers could check if their ICAs are in the list (assuming within time interval) and if not they could just send them regardless of the flag (also discussed in https://github.com/csosto-pk/tls-suppress-intermediates/issues/7)\r\n\r\nWe should think about this more. ",
       "createdAt": "2022-03-17T03:36:01Z",
-      "updatedAt": "2022-03-23T14:04:11Z",
+      "updatedAt": "2022-04-01T16:21:08Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Reach out to CCADB https://groups.google.com/a/mozilla.org/g/dev-security-policy ",
+          "createdAt": "2022-04-01T16:21:08Z",
+          "updatedAt": "2022-04-01T16:21:08Z"
+        }
+      ]
     },
     {
       "number": 15,
