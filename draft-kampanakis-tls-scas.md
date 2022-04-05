@@ -137,6 +137,14 @@ informative:
     date: 2021
     target: https://csrc.nist.gov/projects/post-quantum-cryptography
 
+  FILOSOTTILE:
+    author:
+      -
+        ins: F. Valsorda
+        name: Filippo Valsorda
+    title: "filippo.io/intermediates"
+    date: 2022
+    target: https://github.com/FiloSottile/intermediates
 
 --- abstract
 
@@ -357,7 +365,16 @@ performance. -->
 # IANA Considerations
 
 This document registers the 0xTBD1 in the registry created by
-{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}.
+{{!TLS-FLAGS=I-D.ietf-tls-tlsflags}}. 
+
+# Acknowledgements 
+
+We would like to thank Ilari Liusvaara, Ryan Sleevi
+Filippo Valsorda and for their valuable feedback contributions
+to this document.
+
+The authors would also like to thank Filippo Valsorda for his feedback
+regarding ICA lists {{FILOSOTTILE}}.
 
 
 --- back
