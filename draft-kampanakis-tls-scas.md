@@ -275,7 +275,7 @@ visits tell the server that the client has the ICAs and it does not
 need to send them. These options require further evaluation only if
 we think that they are worth the effort.\]
 
-The 0xTBD1 flag used below to signal ICA suppression can only be sent
+The 0xTBD1 flag used to signal ICA suppression can only be sent
 in a ClientHello or CertificateRequest message as defined below.
 Endpoints that receive a 0xTBD1 flag with a value of 1 in any other
 handshake message MUST generate a fatal illegal_parameter alert.
@@ -300,7 +300,12 @@ does not support CA certificate suppression, the server SHOULD ignore the
 
 To prevent a failed TLS connection, a server could choose to send its
 intermediates regardless of the flag from the client, if it has a reason
-to believe the issuing CAs do not exist in the client ICA list.
+to believe the issuing CAs do not exist in the client ICA list. For
+example, if the server's certificate chain contains ICAs with
+technical constraints which are not disclosed, the server SHOULD send
+the chain back to the client regardless of the suppression flag in the
+ClientHello. \[EDNOTE: MSRP 2.8 may require constrained intermediates
+which would mean this could change for WebPKI.\]
 
 If the connection still fails because the client cannot build the
 certificate chain to authenticate the server, the client MUST NOT
@@ -325,7 +330,12 @@ does not support CA certificate suppression, the client SHOULD ignore the
 
 To prevent a failed TLS connection, a client could choose to send its
 intermediates regardless of the flag from the server, if it has a reason
-to believe the issuing CAs do not exist in the server ICA list.
+to believe the issuing CAs do not exist in the server ICA list. For
+example, if the client's certificate chain contains ICAs with technical
+constraints which are not disclosed, the client SHOULD send the chain
+back to the server regardless of the ICA suppression flag in the
+CertificateRequest. \[EDNOTE: MSRP 2.8 may require constrained
+intermediates which would mean this could change for WebPKI.\]
 
 If the connection still fails because the server cannot build the
 certificate chain to authenticate the client, the server MUST NOT
