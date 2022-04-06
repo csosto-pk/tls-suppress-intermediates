@@ -162,7 +162,7 @@ The most data heavy part of a TLS handshake is authentication. It usually
 consists of a signature, an end-entity certificate and Certificate Authority
 (CA) certificates used to authenticate the end-entity to a trusted root CA.
 These chains can sometime add to a few kB of data which could be problematic
-for some usecases. {{?EAPTLSCERT=I-D.ietf-emu-eaptlscert}} and
+for some use cases. {{?EAPTLSCERT=I-D.ietf-emu-eaptlscert}} and
 {{?EAP-TLS13=I-D.ietf-emu-eap-tls13}} discuss the issues big certificate
 chains in EAP authentication. Additionally, it is known that IEEE 802.15.4
 {{IEEE802154}} mesh networks and Wi-SUN {{WISUN}} Field Area Networks
@@ -204,7 +204,7 @@ of public key infrastructure (PKI), intermediate CA certificates
 sign end-entity certificates.  In the web PKI, clients require
 that certificate authorities disclose all intermediate certificates
 that they create. Although the set of intermediate certificates
-is large, the size is bounded. Additionally, in some usecases the
+is large, the size is bounded. Additionally, in some use cases the
 set of communicating peers is limited.
 
 For a client or server that has the necessary intermediates,
@@ -226,7 +226,7 @@ issue by omitting all certificates in the handshake if the client
 or server had cached the peer certificate. This standard has not
 seen wide adoption and could allow for TLS session correlation.
 Additionally, the short lifetime certificates used today and the
-large size of peers in some usecases make the peer certificate
+large size of peers in some use cases make the peer certificate
 cache update and maintenance mechanism challenging --- not the
 least because of privacy concerns.  The
 mechanism proposed in this document is not susceptible to
@@ -246,8 +246,8 @@ and only when, they appear in all capitals, as shown here.
 The goal is when a client or server has the intermediate CAs
 to build the certificate chain for the peer it is establishing
 a TLS connection with, to signal to the peer to not send
-theese certificates. TLS {{?RFC5246=rfc5246}}
-{{?RFC8446=rfc8446}} allow for the root CA certificate to be
+these certificates. TLS {{?RFC5246=rfc5246}}
+{{?RFC8446=rfc8446}} allows for the root CA certificate to be
 omitted from the handshake under the assumption that
 the remote peer already possesses it in order to validate
 its peers. Thus, a client or server in possession of
@@ -255,16 +255,37 @@ the CA certificates would only need the peer end-entity
 certificate to validate its identity which would alleviate
 the data flowing in TLS.
 
-It is beyond the scope of this document to define how CA certificates
-are identified and stored. In some usecases {{ICA-PRELOAD}} the peer
-may assume that all intermediates are available locally. In other
-usecases where not all CA certificates can be stored, there may be
-intermediate CA certificate caching and updating mechanisms.
-Some options for such mechanisms are discussed in {{TLS-SUPPRESS}}.
 
-\[EDNOTE: One additional option could be to use a TLS extension like
-the one defined in {{?RFC7924}} to include the chain fingerprint so
-the peer can confirm that he does not need to send the chain because
+This draft assumes that the endpoint can keep as set of ICAs
+in memory to use them while building certificate chains to
+authenticate a peer. Most usually the set will be stored locally
+in non-volatile memory. In constrained devices the intermediates
+could be cached, kept and updated only in volatile memory
+especially when the communicating peers' PKI domains are
+limited. 
+
+How CA certificates are identified and stored is dependent on
+the use case. In some use cases (e.g. WebPKI {{ICA-PRELOAD}}) the
+peer may assume that all intermediates are assembled, distributed
+and updated regularly using an out-of-band mechanism. In other
+use cases when the communicating peers' PKI domains are
+limited and not all CA certificates can be stored (i.e.,
+constrained devices), or distributed, intermediates could be
+cached and updated dynamically using a caching mechanism. 
+Such mechanisms are discussed in {{TLS-SUPPRESS}}.
+
+Although this document uses mechanisms to minimize TLS
+authentication failures due to stale or incomplete ICA lists,
+an endpoint is expected to re-attempt a TLS connection if it
+failed to authenticate a peer certificate after requesting ICA
+suppression. \[EDNOTE: draft-ietf-tls-esni already requires
+the client to retry a connection when ECH is "securely replaced
+by the server" or "securely disabled by the server". \]
+
+\[EDNOTE: To prevent failuers, one additional option
+could be to use a TLS extension like the one defined
+in {{?RFC7924}} to include the chain fingerprint so the
+peer can confirm that he does not need to send the chain because
 the peer asking for suppression has the correct chain to validate the
 server. That could prevent inadvertent mistakes where the client thinks
 it has the intermediates to validate the server, but what it has is wrong.
@@ -273,9 +294,9 @@ Alternatively we could HMAC the chain to make it indistinguisable.
 Another option is for the server to provide a ticket so client returning
 visits tell the server that the client has the ICAs and it does not
 need to send them. These options require further evaluation only if
-we think that they are worth the effort.\]
+we think that the complexity is worth the benefit.\]
 
-The 0xTBD1 flag used to signal ICA suppression can only be sent
+The 0xTBD1 flag used to signal CA suppression can only be sent
 in a ClientHello or CertificateRequest message as defined below.
 Endpoints that receive a 0xTBD1 flag with a value of 1 in any other
 handshake message MUST generate a fatal illegal_parameter alert.
@@ -333,7 +354,7 @@ intermediates regardless of the flag from the server, if it has a reason
 to believe the issuing CAs do not exist in the server ICA list. For
 example, if the client's certificate chain contains ICAs with technical
 constraints which are not disclosed, the client SHOULD send the chain
-back to the server regardless of the ICA suppression flag in the
+back to the server regardless of the CA suppression flag in the
 CertificateRequest. \[EDNOTE: MSRP 2.8 may require constrained
 intermediates which would mean this could change for WebPKI.\]
 
@@ -359,7 +380,7 @@ suppression signal.
 Even when the 0xTBD1 flag is encrypted in the handshake,
 a passive observer could fingerprint the peers by analyzing the TLS
 handshake data sizes flowing each direction. Widespread adoption of
-the TLS suppression mechanism described in this document will deem
+the TLS CA suppression mechanism described in this document will deem
 the use of the signal for fingerprinting impractical.
 <!-- [EDNOTE: Commenting this out as the probabilistic TLS suppression for the same source-destination would reveal trying to hide TLS suppression. Maybe we can rethink it later] 
 To alleviate this
