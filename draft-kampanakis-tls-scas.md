@@ -2,7 +2,7 @@
 title: "Suppressing CA Certificates in TLS 1.3"
 abbrev: Suppress CAs
 docname: draft-kampanakis-tls-scas-latest
-category: std
+category: exp
 ipr: trust200902
 area: Transport
 workgroup: TLS
