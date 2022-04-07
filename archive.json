@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-04-05T00:57:06.968717+00:00",
+  "timestamp": "2022-04-07T00:59:33.578052+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -230,11 +230,11 @@
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [
-        "TODO"
+        "question"
       ],
       "body": "> In WebPKI, there are some cornercases (constrained ICAs) where the client might be missing a certificate or certificates in the chain.\r\n> Currently the WebPKI root program rules allow not disclosing \"technically constrained\" certificates (but there are plans to change this).\r\n",
       "createdAt": "2022-02-16T05:39:10Z",
-      "updatedAt": "2022-04-03T02:00:24Z",
+      "updatedAt": "2022-04-05T14:49:16Z",
       "closedAt": null,
       "comments": [
         {
@@ -268,9 +268,16 @@
         {
           "author": "csosto-pk",
           "authorAssociation": "OWNER",
-          "body": "- [ ] Add some text that the server might want to send any ICA that has not been publicly disclosed. As that is neutral to PKI and is exactly what makes constrained ICAs problematic here.\r\n- [ ] Keep an eye for MSRP 2.8 later this year. It may require constrained intermediates. In that case then \"I have all the intermediates I am willing to accept\" may just suffice.",
+          "body": "- [x] Add some text that the server might want to send any ICA that has not been publicly disclosed. As that is neutral to PKI and is exactly what makes constrained ICAs problematic here.\r\n\r\nAdded text in commit https://github.com/csosto-pk/tls-suppress-intermediates/commit/c705a7242f31a8c7b3de2832a9e9f351790b6c80 \r\n\r\n>  For example, if the client's certificate chain contains ICAs\r\n>  with technical constraints which are not disclosed, the client SHOULD\r\n>  send the chain back to the server regardless of the ICA suppression\r\n>  flag in the CertificateRequest.  [EDNOTE: MSRP 2.8 may require\r\n>  constrained intermediates which would mean this could change for\r\n>  WebPKI.]\r\n\r\n>  For example, if the server's certificate chain contains ICAs\r\n>  with technical constraints which are not disclosed, the server SHOULD\r\n>  send the chain back to the client regardless of the suppression flag\r\n>  in the ClientHello.  [EDNOTE: MSRP 2.8 may require constrained\r\n>  intermediates which would mean this could change for WebPKI.]\r\n",
           "createdAt": "2022-04-03T02:00:14Z",
-          "updatedAt": "2022-04-03T02:00:14Z"
+          "updatedAt": "2022-04-05T14:49:16Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "- [ ] Keep an eye for MSRP 2.8 later this year. It may require constrained intermediates. In that case then \"I have all the intermediates I am willing to accept\" may just suffice.",
+          "createdAt": "2022-04-05T14:46:18Z",
+          "updatedAt": "2022-04-05T14:46:18Z"
         }
       ]
     },
@@ -466,14 +473,21 @@
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [
-        "enhancement",
-        "TODO"
+        "enhancement"
       ],
       "body": "From Ryan S. \r\n\r\n> Basically, it needs to be a little crisper what the client capabilities are. Presently, it handwaves them as out-of-scope, but as a consequence, makes it difficult to justify the assumptions/complexity that they hide. Does the client have durable storage (e.g. does the IoT device need rewritable media and not just ROM)? Does the client have a reliable (within TBD3) out-of-band update mechanism for metadata such as intermediates? Is the TLS implementation expected to be able to re-establish a connection (which many TLS APIs are not themselves responsible for, or at least, abstract that away)? These all affect the shape of the present design, but also any simplifications.\r\n\r\nWe ought to crisp up the text more. ",
       "createdAt": "2022-02-19T03:51:30Z",
-      "updatedAt": "2022-02-19T03:55:41Z",
+      "updatedAt": "2022-04-06T14:46:18Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in commit https://github.com/csosto-pk/tls-suppress-intermediates/commit/dd597815ba5b1c3b09680aed565ffedf9e7d04cd\r\n\r\n>  This draft assumes that the endpoint can keep as set of ICAs in\r\n>  memory to use them while building certificate chains to authenticate\r\n>  a peer.  Most usually the set will be stored locally in non-volatile\r\n>  memory.  In constrained devices the intermediates could be cached,\r\n>  kept and updated only in volatile memory especially when the\r\n>  communicating peers' PKI domains are limited.\r\n>\r\n>  How CA certificates are identified and stored is dependent on the use\r\n>  case.  In some use cases (e.g.  WebPKI [ICA-PRELOAD]) the peer may\r\n>  assume that all intermediates are assembled, distributed and updated\r\n>  regularly using an out-of-band mechanism.  In other use cases when\r\n>  the communicating peers' PKI domains are limited and not all CA\r\n>  certificates can be stored (i.e., constrained devices), or\r\n>  distributed, intermediates could be cached and updated dynamically\r\n>  using a caching mechanism.  Such mechanisms are discussed in\r\n>  [TLS-SUPPRESS].\r\n>\r\n>  Although this document uses mechanisms to minimize TLS authentication\r\n>  failures due to stale or incomplete ICA lists, an endpoint is\r\n>  expected to re-attempt a TLS connection if it failed to authenticate\r\n>  a peer certificate after requesting ICA suppression.  [EDNOTE: draft-\r\n>  ietf-tls-esni already requires the client to retry a connection when\r\n>  ECH is \"securely replaced by the server\" or \"securely disabled by the\r\n>  server\". ]\r\n\r\nWill close when we think the text works. ",
+          "createdAt": "2022-04-06T14:45:42Z",
+          "updatedAt": "2022-04-06T14:46:18Z"
+        }
+      ]
     },
     {
       "number": 12,
@@ -528,7 +542,7 @@
       "id": "I_kwDOCpw2285F2Z5X",
       "title": "Add Acknowledgements section",
       "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/13",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "csosto-pk",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -539,9 +553,17 @@
       ],
       "body": "Add Filippo Valsorda in the acknowledgements",
       "createdAt": "2022-03-17T03:32:38Z",
-      "updatedAt": "2022-03-17T03:32:38Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-04-05T14:50:35Z",
+      "closedAt": "2022-04-05T14:50:35Z",
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Added Acknowledgements section in commit https://github.com/csosto-pk/tls-suppress-intermediates/commit/e95e08a10d7e566bbb6a93307147381332318e79 \r\n\r\n> 6.  Acknowledgements\r\n> \r\n>    We would like to thank Ilari Liusvaara, Ryan Sleevi Filippo Valsorda\r\n>    and for their valuable feedback contributions to this document.\r\n> \r\n>    The authors would also like to thank Filippo Valsorda for his\r\n>    feedback regarding ICA lists [FILOSOTTILE].\r\n> ",
+          "createdAt": "2022-04-05T14:50:32Z",
+          "updatedAt": "2022-04-05T14:50:32Z"
+        }
+      ]
     },
     {
       "number": 14,
@@ -578,19 +600,26 @@
       "id": "I_kwDOCpw2285GOQFO",
       "title": "Consider making draft Experimental",
       "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/15",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "csosto-pk",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [
-        "question",
-        "TODO"
+        "question"
       ],
       "body": "We could make the draft Experimental draft so TLS implementers don\u2019t feel mandated to support it. \r\n\r\nSimilar examples include early versions of [draft-ietf-tls-subcert](https://datatracker.ietf.org/doc/html/draft-ietf-tls-subcerts) and [draft-ietf-tls-esni](https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni)",
       "createdAt": "2022-03-23T13:41:17Z",
-      "updatedAt": "2022-04-04T16:38:38Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-04-06T14:46:56Z",
+      "closedAt": "2022-04-06T14:46:56Z",
+      "comments": [
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in commit https://github.com/csosto-pk/tls-suppress-intermediates/commit/c66dcb65c758a3c00ed752405d3338f6e60bcd7e ",
+          "createdAt": "2022-04-06T14:46:56Z",
+          "updatedAt": "2022-04-06T14:46:56Z"
+        }
+      ]
     }
   ],
   "pulls": [
