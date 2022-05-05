@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-04-07T00:59:33.578052+00:00",
+  "timestamp": "2022-05-05T01:08:57.853233+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -234,7 +234,7 @@
       ],
       "body": "> In WebPKI, there are some cornercases (constrained ICAs) where the client might be missing a certificate or certificates in the chain.\r\n> Currently the WebPKI root program rules allow not disclosing \"technically constrained\" certificates (but there are plans to change this).\r\n",
       "createdAt": "2022-02-16T05:39:10Z",
-      "updatedAt": "2022-04-05T14:49:16Z",
+      "updatedAt": "2022-05-04T14:13:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -278,6 +278,13 @@
           "body": "- [ ] Keep an eye for MSRP 2.8 later this year. It may require constrained intermediates. In that case then \"I have all the intermediates I am willing to accept\" may just suffice.",
           "createdAt": "2022-04-05T14:46:18Z",
           "updatedAt": "2022-04-05T14:46:18Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "MSRP 2.8 was published https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/ \r\n\r\nAnd it reads \r\n> [...] Name-constrained CA certificates that are technically capable of issuing working server or email certificates that were exempt from disclosure in previous versions of this policy MUST be disclosed in the CCADB prior to July 1, 2022.\r\n> \r\n> All disclosure MUST be made freely available and without additional requirements, including, but not limited to, registration, legal agreements, or restrictions on redistribution of the certificates in whole or in part.\r\n> \r\n> We recognize that technically constraining intermediate certificates as described above may not be practical in some cases. All certificates that are capable of being used to issue new certificates, that are not technically constrained, and that directly or transitively chain to a certificate included in Mozilla\u2019s root store MUST be audited in accordance with this policy. If the CA operator has a currently valid audit report at the time of creation of the intermediate certificate, then the new intermediate certificate MUST appear on the CA operator's next periodic audit reports.\r\n\r\nSo, it now requires name-constrained CA to disclosed to CCADB, but not all constrained CAs. Not sure how many non name-constrained CAs there are, but it sounds like it make our life a little easier and name-constrained CAs will now be known. ",
+          "createdAt": "2022-05-04T14:13:23Z",
+          "updatedAt": "2022-05-04T14:13:23Z"
         }
       ]
     },
