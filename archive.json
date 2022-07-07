@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-05-05T01:08:57.853233+00:00",
+  "timestamp": "2022-07-07T01:18:13.590960+00:00",
   "repo": "csosto-pk/tls-suppress-intermediates",
   "labels": [
     {
@@ -234,7 +234,7 @@
       ],
       "body": "> In WebPKI, there are some cornercases (constrained ICAs) where the client might be missing a certificate or certificates in the chain.\r\n> Currently the WebPKI root program rules allow not disclosing \"technically constrained\" certificates (but there are plans to change this).\r\n",
       "createdAt": "2022-02-16T05:39:10Z",
-      "updatedAt": "2022-05-04T14:13:23Z",
+      "updatedAt": "2022-07-05T14:25:55Z",
       "closedAt": null,
       "comments": [
         {
@@ -282,9 +282,9 @@
         {
           "author": "csosto-pk",
           "authorAssociation": "OWNER",
-          "body": "MSRP 2.8 was published https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/ \r\n\r\nAnd it reads \r\n> [...] Name-constrained CA certificates that are technically capable of issuing working server or email certificates that were exempt from disclosure in previous versions of this policy MUST be disclosed in the CCADB prior to July 1, 2022.\r\n> \r\n> All disclosure MUST be made freely available and without additional requirements, including, but not limited to, registration, legal agreements, or restrictions on redistribution of the certificates in whole or in part.\r\n> \r\n> We recognize that technically constraining intermediate certificates as described above may not be practical in some cases. All certificates that are capable of being used to issue new certificates, that are not technically constrained, and that directly or transitively chain to a certificate included in Mozilla\u2019s root store MUST be audited in accordance with this policy. If the CA operator has a currently valid audit report at the time of creation of the intermediate certificate, then the new intermediate certificate MUST appear on the CA operator's next periodic audit reports.\r\n\r\nSo, it now requires name-constrained CA to disclosed to CCADB, but not all constrained CAs. Not sure how many non name-constrained CAs there are, but it sounds like it make our life a little easier and name-constrained CAs will now be known. ",
+          "body": "MSRP 2.8 was published https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/ \r\n\r\nAnd it reads \r\n> [...] Name-constrained CA certificates that are technically capable of issuing working server or email certificates that were exempt from disclosure in previous versions of this policy MUST be disclosed in the CCADB prior to July 1, 2022.\r\n> \r\n> All disclosure MUST be made freely available and without additional requirements, including, but not limited to, registration, legal agreements, or restrictions on redistribution of the certificates in whole or in part.\r\n> \r\n> We recognize that technically constraining intermediate certificates as described above may not be practical in some cases. All certificates that are capable of being used to issue new certificates, that are not technically constrained, and that directly or transitively chain to a certificate included in Mozilla\u2019s root store MUST be audited in accordance with this policy. If the CA operator has a currently valid audit report at the time of creation of the intermediate certificate, then the new intermediate certificate MUST appear on the CA operator's next periodic audit reports.\r\n\r\nSo, it now requires name-constrained CA to disclosed to CCADB, but not all constrained CAs. Not sure how many non name-constrained CAs there are, but it sounds like it makes our life a little easier and name-constrained CAs will now be known. ",
           "createdAt": "2022-05-04T14:13:23Z",
-          "updatedAt": "2022-05-04T14:13:23Z"
+          "updatedAt": "2022-07-05T14:25:55Z"
         }
       ]
     },
@@ -575,7 +575,7 @@
     {
       "number": 14,
       "id": "I_kwDOCpw2285F2aRL",
-      "title": "CCADB to host WebPKI ICA list",
+      "title": "CCADB's ICA list accuracy",
       "url": "https://github.com/csosto-pk/tls-suppress-intermediates/issues/14",
       "state": "OPEN",
       "author": "csosto-pk",
@@ -590,7 +590,7 @@
       ],
       "body": "If a 3rd party repo was hosting the ICA list for WebPKI, then we could limit outages because \r\n- all clients would have the same version (assuming within time interval). \r\n- servers could check if their ICAs are in the list (assuming within time interval) and if not they could just send them regardless of the flag (also discussed in https://github.com/csosto-pk/tls-suppress-intermediates/issues/7)\r\n\r\nWe should think about this more. ",
       "createdAt": "2022-03-17T03:36:01Z",
-      "updatedAt": "2022-04-01T16:21:08Z",
+      "updatedAt": "2022-07-05T14:22:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -599,6 +599,13 @@
           "body": "Reach out to CCADB https://groups.google.com/a/mozilla.org/g/dev-security-policy ",
           "createdAt": "2022-04-01T16:21:08Z",
           "updatedAt": "2022-04-01T16:21:08Z"
+        },
+        {
+          "author": "csosto-pk",
+          "authorAssociation": "OWNER",
+          "body": "CCADB already hosts them here https://ccadb-public.secure.force.com/mozilla/MozillaIntermediateCertsCSVReport and we confirmed these are the same FiloSottile pulls from. So, there is a third-party that hosts them already. \r\n\r\nNow we need to study how good this list is; meaning if the ICAs start getting used before they show up in the list. ",
+          "createdAt": "2022-07-05T14:22:06Z",
+          "updatedAt": "2022-07-05T14:22:06Z"
         }
       ]
     },
