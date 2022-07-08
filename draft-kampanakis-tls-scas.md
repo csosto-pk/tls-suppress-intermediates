@@ -325,8 +325,7 @@ to believe the issuing CAs do not exist in the client ICA list. For
 example, if the server's certificate chain contains ICAs with
 technical constraints which are not disclosed, the server SHOULD send
 the chain back to the client regardless of the suppression flag in the
-ClientHello. \[EDNOTE: MSRP 2.8 may require constrained intermediates
-which would mean this could change for WebPKI.\]
+ClientHello. 
 
 If the connection still fails because the client cannot build the
 certificate chain to authenticate the server, the client MUST NOT
