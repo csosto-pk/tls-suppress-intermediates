@@ -1,7 +1,7 @@
 ---
 title: "Suppressing CA Certificates in TLS 1.3"
 abbrev: Suppress CAs
-docname: draft-kampanakis-tls-scas-latest
+docname: draft-kampanakis-tls-scas-latest-03
 category: exp
 ipr: trust200902
 area: Transport
@@ -11,12 +11,6 @@ stand_alone: yes
 pi: [toc, sortrefs, symrefs, docmapping]
 
 author:
-  -
-    ins: M. Thomson
-    name: Martin Thomson
-    org: Mozilla
-    email: mt@lowentropy.net
-
   -
     ins: P. Kampanakis
     name: Panos Kampanakis
@@ -34,6 +28,12 @@ author:
     name: Bas Westerbaan
     org: Cloudflare
     email: bas@cloudflare.com
+
+  -
+    ins: M. Thomson
+    name: Martin Thomson
+    org: Mozilla
+    email: mt@lowentropy.net
 
 normative:
 
@@ -146,6 +146,32 @@ informative:
     date: 2022
     target: https://github.com/FiloSottile/intermediates
 
+  QUIC-CERTS:
+    author:
+      -
+        ins: M. Nawrocki
+        name: Marcin Nawrocki
+      -
+        ins: P. Tehrani
+        name: Pouyan Fotouhi Tehrani
+      -
+        ins: R. Hiesgen
+        name: Raphael Hiesgen
+      -
+        ins: J. Mucke
+        name: Jonas Mucke
+      -
+        ins: T. Schmidt
+        name: Thomas C. Schmidt        
+      -
+        ins: M. Wahlisch 
+        name: Matthias Wahlisch
+
+    title: "On the Interplay between TLS Certificates and QUIC Performance"
+    date: November 2022
+    seriesinfo:
+      DOI: 10.1145/3555050.3569123
+
 --- abstract
 
 A TLS client or server that has access to the complete set of published
@@ -190,7 +216,9 @@ will impact QUIC and TLS. {{CL-BLOG}} also shows that 9-10 kilobyte
 certificate chains (even with 30MSS initial TCP congestion window)
 will lead to double digit TLS handshake slowdowns. What's more, it
 shows that some clients or middleboxes cannot handle chains larger
-than 10kB.
+than 10kB. {{QUIC-CERTS}} also shows discusses how classical RSA
+certificate chains often exceed the QUIC amplification, an issue
+which will happen almost always with post-quantum certicates.
 
 Mechanisms like
 {{?RFC8879=rfc8879}}{{?CBOR-CERTS=I-D.ietf-cose-cbor-encoded-cert}}
